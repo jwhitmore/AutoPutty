@@ -1,0 +1,36 @@
+IDI_ICON1               ICON    DISCARDABLE     "AutoPutty.ico"
+
+#include <windows.h>
+#include "version.h"
+
+#define VER_PRODUCTNAME_STR         "AutoPutty\0"
+#define VER_COMPANYNAME_STR         "Justin Whitmore\0"
+
+VS_VERSION_INFO     VERSIONINFO
+FILEVERSION         VER_FILEVERSION
+PRODUCTVERSION      VER_PRODUCTVERSION
+FILEFLAGSMASK       0x3fL
+FILEFLAGS           0
+FILEOS              VOS_NT_WINDOWS32
+FILETYPE            VFT_APP
+FILESUBTYPE         VFT2_UNKNOWN
+BEGIN
+    BLOCK   "VarFileInfo"
+    BEGIN
+        VALUE   "Translation",  0x409,  1200
+    END
+    BLOCK   "StringFileInfo"
+    BEGIN
+        BLOCK   "040904b0"
+        BEGIN
+            VALUE   "CompanyName",      VER_COMPANYNAME_STR
+            VALUE   "FileDescription",  "Auto-logon/Tabbed PuTTy\0"
+            VALUE   "FileVersion",      VER_FILEVERSION_STR
+            VALUE   "InternalName",     "AutoPutty\0"
+            VALUE   "LegalCopyright",   "Copyright 2012-2013 by Justin Whitmore.\0"
+            VALUE   "OriginalFilename", "AutoPutty.exe\0"
+            VALUE   "ProductName",      VER_PRODUCTNAME_STR
+            VALUE   "ProductVersion",   VER_PRODUCTVERSION_STR
+        END
+    END
+END

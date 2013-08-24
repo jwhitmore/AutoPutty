@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/executables">
+        <file alias="putty.exe">putty.exe</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>AutoPutty.ico</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>AutoPutty_splash.png</file>
+    </qresource>
+</RCC>
