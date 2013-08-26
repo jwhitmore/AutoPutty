@@ -19,12 +19,13 @@
 # * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # ***********************************************************************
 #*/
-MAJOR = 4
-MINOR = 5
+MAJOR = 5
+MINOR = 0
+PATCH = 1
 VERSION_HEADER = $$PWD\\version.h
 
 versiontarget.target = $$VERSION_HEADER
-versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$VERSION_HEADER GIT
+versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
 versiontarget.depends = FORCE
 
 PRE_TARGETDEPS += $$VERSION_HEADER

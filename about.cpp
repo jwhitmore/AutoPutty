@@ -32,7 +32,7 @@ About::About(QWidget *parent) :
   ui(new Ui::About)
 {
   ui->setupUi(this);
-  ui->lblAutoPutty->setText(QString("AutoPutty %1.%2").arg(Version::MAJOR).arg(Version::MINOR));
+  ui->lblAutoPutty->setText(QString("AutoPutty %1.%2.%3").arg(Version::MAJOR).arg(Version::MINOR).arg(Version::PATCH));
   ui->lblRevision->setText(QString("Revision: %1").arg(Version::REVISION));
   ui->lblBuild->setText(QString("Build: %1").arg(Version::BUILD));
 }
