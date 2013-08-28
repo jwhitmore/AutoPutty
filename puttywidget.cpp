@@ -112,6 +112,12 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setFocusPolicy(Qt::ClickFocus);
   this->resize(parent->size());
+
+  connect(this,SIGNAL(topLevelChanged(bool)),this,SLOT(topLevelChanged(bool)));
+  btnFloat = this->findChild<QAbstractButton*>("qt_dockwidget_floatbutton");
+  if (btnFloat) {
+    btnFloat->hide();
+  }
   actionChangeTitle = new QAction(tr("Change Title"),this);
   menuContext = new QMenu(this);
 
@@ -281,10 +287,10 @@ bool PuttyWidget::addProcToWidget()
     int retries = 0;
     while( !puttyHandle && procPutty)
     {
-      Thread::usleep(250000);
+      Thread::msleep(300);
       puttyHandle = findPuttyWindow(procPutty);
       retries++;
-      if (retries > 10) {
+      if (retries > 15) {
         return false;
       }
     }
@@ -395,5 +401,22 @@ void PuttyWidget::customContextMenuRequested(const QPoint &pos)
   if (menuContext != NULL) {
     QPoint globalPos = this->mapToGlobal(pos);
     menuContext->exec(globalPos);
+  }
+}
+
+//=============================================================================
+// Slot for catching when the widget is undocked/docked
+//=============================================================================
+void PuttyWidget::topLevelChanged(bool topLevel)
+{
+  FUNC_DEBUG;
+  if (btnFloat) {
+    btnFloat->hide();
+  }
+  if (topLevel) {
+    // TODO: Revert to default size
+
+    this->setGeometry(this->logicalDpiX(),this->logicalDpiY(),700,400);
+    //this->move(100,100);
   }
 }

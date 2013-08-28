@@ -206,6 +206,16 @@ Passwords</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txtPassphrase</tabstop>
+  <tabstop>txtUserName</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>cbShowPasswords</tabstop>
+  <tabstop>tblUser</tabstop>
+  <tabstop>btnUpdate</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>btnClose</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

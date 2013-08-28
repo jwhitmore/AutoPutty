@@ -209,7 +209,7 @@ void MainWindow::startPutty(QString session, bool newTab)
 
     PuttyWidget* putty = new PuttyWidget(window);
     putty->setPause(iniHelper->readValue("Application","PauseInMsecs").toULong());
-    window->addDockWidget(Qt::TopDockWidgetArea,putty);
+    window->addDockWidget(Qt::LeftDockWidgetArea,putty);
     if (lastPutty != NULL) {
       window->tabifyDockWidget(lastPutty,putty);
     }

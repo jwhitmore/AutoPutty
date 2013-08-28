@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QMap>
+#include <QAbstractButton>
 
 #include <stdexcept>
 
@@ -79,6 +80,7 @@ private:
   QWidget* widget;
   unsigned long msecs;
   bool attached;
+  QAbstractButton* btnFloat;
 
   QAction* actionChangeTitle;
   bool addProcToWidget();
@@ -88,6 +90,7 @@ private slots:
   void processStateChanged(QProcess::ProcessState state);
   void changeTitle_triggered();
   void customContextMenuRequested(const QPoint &pos);
+  void topLevelChanged(bool topLevel);
 
 signals:
   void processStoppedSignal(PuttyWidget* widget);
