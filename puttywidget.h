@@ -28,6 +28,7 @@
 #include <QThread>
 #include <QDebug>
 #include <QResizeEvent>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QMainWindow>
 #include <QMap>
@@ -71,6 +72,7 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent* event);
+  void keyPressEvent(QKeyEvent * event);
 
 private:  
   QProcess* procPutty;

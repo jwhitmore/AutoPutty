@@ -20,6 +20,8 @@
  ***********************************************************************
 */
 
+#include <QCoreApplication>
+
 #include "debug.h"
 #include "puttywidget.h"
 
@@ -270,6 +272,29 @@ void PuttyWidget::resizeEvent(QResizeEvent* event)
     ::MoveWindow(puttyHandle,1,1,this->widget->width(),this->widget->height(),true);
     event->accept();
   }
+}
+
+//=============================================================================
+// Event is fired when the a key is pressed
+//=============================================================================
+void PuttyWidget::keyPressEvent(QKeyEvent* event)
+{
+  FUNC_DEBUG;
+
+  this->focus();
+  // Simulate a key press
+  keybd_event( event->key(),
+               0x45,
+               KEYEVENTF_EXTENDEDKEY | 0,
+               0 );
+
+  // Simulate a key release
+  keybd_event( event->key(),
+               0x45,
+               KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
+               0);
+
+  event->accept();
 }
 
 //-----------------------------------------------------------------------------
