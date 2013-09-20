@@ -107,10 +107,8 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
   procPutty = NULL;
   attached = false;
   msecs = 300;
-  widget = new QWidget(this);
   this->setAttribute(Qt::WA_DeleteOnClose,true);
-  widget->setAttribute(Qt::WA_DeleteOnClose,true);
-  this->setWidget(widget);
+  this->setWidget(NULL);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setFocusPolicy(Qt::ClickFocus);
   this->resize(parent->size());
@@ -126,7 +124,6 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
   menuContext->addAction(actionChangeTitle);
   connect(actionChangeTitle,SIGNAL(triggered()),this,SLOT(changeTitle_triggered()));
   connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenuRequested(QPoint)));
-
 }
 
 //=============================================================================
@@ -139,9 +136,6 @@ PuttyWidget::~PuttyWidget()
       kill();
     }
     delete procPutty;
-  }
-  if (widget != NULL) {
-    widget->close();
   }
 }
 
@@ -157,7 +151,7 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
   try
   {
     if (!puttyPath.isEmpty() && !session.isEmpty() && !username.isEmpty() && !password.isEmpty()) {
-      procPutty = new QProcess(widget);
+      procPutty = new QProcess(this);
       connect(procPutty,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(processStateChanged(QProcess::ProcessState)));
       this->setWindowTitle(session);
 
@@ -167,7 +161,7 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
       args << "-pw" << password;
       args << "-P" << "22";
 
-      procPutty->start(puttyPath,args);
+      procPutty->start(puttyPath, args);
 
       if (procPutty->waitForStarted(4000)) {
         Thread::msleep(msecs);
@@ -252,14 +246,6 @@ bool PuttyWidget::focus()
   return ::BringWindowToTop(puttyHandle);
 }
 
-//=============================================================================
-// PuttyWidget SizeHint
-//=============================================================================
-QSize PuttyWidget::sizeHint() const
-{
-  return QSize(400, 500);
-}
-
 //-----------------------------------------------------------------------------
 //----------------- Protected -------------------------------------------------
 
@@ -269,7 +255,10 @@ QSize PuttyWidget::sizeHint() const
 void PuttyWidget::resizeEvent(QResizeEvent* event)
 {
   if (attached) {
-    ::MoveWindow(puttyHandle,1,1,this->widget->width(),this->widget->height(),true);
+    ::MoveWindow( puttyHandle, 1,
+                 (this->isTopLevel() ? 1 : 21), this->width(),
+                 (this->isTopLevel() ? this->height() : this->height() - 21),
+                 true );
     event->accept();
   }
 }
@@ -308,30 +297,29 @@ bool PuttyWidget::addProcToWidget()
   FUNC_DEBUG;
   try
   {
-    puttyHandle = findPuttyWindow(procPutty);
     int retries = 0;
-    while( !puttyHandle && procPutty)
+    while( (puttyHandle = findPuttyWindow(procPutty) ) == NULL)
     {
-      Thread::msleep(300);
-      puttyHandle = findPuttyWindow(procPutty);
+      if (puttyHandle) { break; }
       retries++;
       if (retries > 15) {
         return false;
       }
+      Thread::msleep(300);
     }
     if ( puttyHandle != NULL ) {
-      puttyParent = ::SetParent(puttyHandle,(HWND)this->widget->winId());
+      puttyParent = ::SetParent(puttyHandle,(HWND)this->winId());
       if (puttyParent == NULL) {
         return false;
       }
-      this->adjustSize();
       if (::ShowWindow(puttyHandle,SW_MAXIMIZE)) {
+
         ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
         ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
         attached = true;
-        this->resize(this->widget->width(),this->widget->height());
-        return true;
+        this->resize(this->size());
       }
+      return true;
     }
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();
@@ -438,10 +426,11 @@ void PuttyWidget::topLevelChanged(bool topLevel)
   if (btnFloat) {
     btnFloat->hide();
   }
+
   if (topLevel) {
     // TODO: Revert to default size
-
-    this->setGeometry(this->logicalDpiX(),this->logicalDpiY(),700,400);
-    //this->move(100,100);
+    POINT p;
+    ::GetCursorPos(&p);
+    this->setGeometry(p.x, p.y, 700, 400);
   }
 }

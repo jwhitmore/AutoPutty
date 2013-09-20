@@ -68,7 +68,6 @@ public:
   bool isRunning();
   bool kill();
   bool focus();
-  QSize sizeHint() const;
 
 protected:
   void resizeEvent(QResizeEvent* event);
@@ -79,7 +78,6 @@ private:
   QMenu* menuContext;
   HWND puttyHandle;
   HWND puttyParent;
-  QWidget* widget;
   unsigned long msecs;
   bool attached;
   QAbstractButton* btnFloat;

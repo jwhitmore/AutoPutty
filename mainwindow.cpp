@@ -160,7 +160,6 @@ void MainWindow::startPutty(QString session, bool newTab)
 {
   FUNC_DEBUG;
   DEBUG << "session " << session;
-  bool resize = false;
   try
   {
     if (userinfo->isEmpty()) {
@@ -204,7 +203,6 @@ void MainWindow::startPutty(QString session, bool newTab)
       window->setWindowFlags(Qt::Widget);
       window->setCentralWidget(NULL);
       window->setDockNestingEnabled(true);
-      resize = true;
     }
 
     PuttyWidget* putty = new PuttyWidget(window);
@@ -218,13 +216,8 @@ void MainWindow::startPutty(QString session, bool newTab)
     if (ui->tabWidget->currentIndex() < 0 || newTab) {
       idx = ui->tabWidget->addTab(window,QString("Tab %1").arg(tabCount++));
       ui->tabWidget->setCurrentIndex(idx);
-      resize = true;
     }
 
-
-    if (resize) {
-      window->resize(ui->tabWidget->size());
-    }
     connect(putty,SIGNAL(processStoppedSignal(PuttyWidget*)),this,SLOT(pwProcessEnded(PuttyWidget*)));
     connect(putty,SIGNAL(changeTitleSignal(PuttyWidget*)),this,SLOT(pwChangeTitle(PuttyWidget*)));
     
@@ -239,7 +232,6 @@ void MainWindow::startPutty(QString session, bool newTab)
       statusbar->showMessage("Error starting putty. Check User Setup.",5000);
       return;
     }
-    putty->resize(window->size());
 
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();
@@ -480,7 +472,6 @@ void MainWindow::on_actionNew_Tab_triggered()
   window->setDockNestingEnabled(true);
 
   int idx = ui->tabWidget->addTab(window,QString("Tab %1").arg(tabCount++));
-  window->resize(ui->tabWidget->size());
   ui->tabWidget->setCurrentIndex(idx);
 }
 
