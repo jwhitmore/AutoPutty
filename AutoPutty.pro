@@ -21,7 +21,7 @@
 #*/
 MAJOR = 5
 MINOR = 0
-PATCH = 1
+PATCH = 2
 VERSION_HEADER = $$PWD\\version.h
 
 versiontarget.target = $$VERSION_HEADER
