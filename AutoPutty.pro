@@ -22,10 +22,10 @@
 MAJOR = 5
 MINOR = 0
 PATCH = 2
-VERSION_HEADER = $$PWD\\version.h
+VERSION_HEADER = version.h
 
 versiontarget.target = $$VERSION_HEADER
-versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+versiontarget.commands = version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
 versiontarget.depends = FORCE
 
 PRE_TARGETDEPS += $$VERSION_HEADER
