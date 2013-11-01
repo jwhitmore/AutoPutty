@@ -570,6 +570,23 @@ void MainWindow::on_actionAbout_triggered()
   about.exec();
 }
 
+
+//=============================================================================
+// On leave of passphrase, reload userinfo when leaving field so the passwords
+// and usernames stay updated correctly
+//=============================================================================
+void MainWindow::on_txtPassphrase_editingFinished()
+{
+  FUNC_DEBUG;
+  if (!ui->txtPassphrase->text().isEmpty()) {
+    loadUsers();
+  } else {
+    if (userinfo != NULL) {
+      userinfo->clear();
+    }
+  }
+}
+
 //=============================================================================
 // Dynamic menu handler
 //=============================================================================

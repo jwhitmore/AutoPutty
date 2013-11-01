@@ -7,5 +7,6 @@
     </qresource>
     <qresource prefix="/images">
         <file>AutoPutty_splash.png</file>
+        <file>PaypalSupportButton.png</file>
     </qresource>
 </RCC>

@@ -22,6 +22,8 @@
 
 #include <QPixmap>
 #include <QLabel>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "version.h"
 #include "about.h"
@@ -35,9 +37,23 @@ About::About(QWidget *parent) :
   ui->lblAutoPutty->setText(QString("AutoPutty %1.%2.%3").arg(Version::MAJOR).arg(Version::MINOR).arg(Version::PATCH));
   ui->lblRevision->setText(QString("Revision: %1").arg(Version::REVISION));
   ui->lblBuild->setText(QString("Build: %1").arg(Version::BUILD));
+  ui->lblEmail->setText("<a href='mailto:support@justinwhitmore.com'>Support Email</a>");
+  ui->lblEmail->setOpenExternalLinks(true);
+  ui->lblDownloads->setText("<a href='https://github.com/jwhitmore/AutoPutty/releases'>Release Downloads</a>");
+  ui->lblDownloads->setOpenExternalLinks(true);
 }
 
 About::~About()
 {
   delete ui;
+}
+
+void About::on_lblEmail_linkActivated(const QString &link)
+{
+  QDesktopServices::openUrl(QUrl(link));
+}
+
+void About::on_lblDownloads_linkActivated(const QString &link)
+{
+  QDesktopServices::openUrl(QUrl(link));
 }

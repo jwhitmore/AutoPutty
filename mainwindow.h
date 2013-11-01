@@ -102,6 +102,7 @@ private slots:
 
   void on_actionRefresh_Sessions_triggered();
   void on_actionAbout_triggered();
+  void on_txtPassphrase_editingFinished();
 };
 
 #endif // MAINWINDOW_H

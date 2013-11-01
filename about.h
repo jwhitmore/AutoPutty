@@ -37,6 +37,11 @@ public:
   explicit About(QWidget *parent = 0);
   ~About();
   
+private slots:
+  void on_lblEmail_linkActivated(const QString &link);
+
+  void on_lblDownloads_linkActivated(const QString &link);
+
 private:
   Ui::About *ui;
 };
