@@ -484,10 +484,10 @@ void MainWindow::on_actionChange_Putty_Settings_triggered()
   try
   {
     QProcess* procPutty = new QProcess();
-    procPutty->startDetached(puttyPath);
-    if (!procPutty->waitForStarted(3000)) {
+    if (!procPutty->startDetached(puttyPath)) {
       statusbar->showMessage("Failed to open putty.exe",5000);
     }
+    delete procPutty;
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();
     statusbar->showMessage("Exception opening putty.exe",5000);

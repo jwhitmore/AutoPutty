@@ -165,7 +165,10 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
 
       if (procPutty->waitForStarted(4000)) {
         Thread::msleep(msecs);
-        return addProcToWidget();
+        if (!addProcToWidget()) {
+          procPutty->kill();
+          return false;
+        }
       } else {
         procPutty->kill();
         return false;
@@ -177,6 +180,7 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
     DEBUG << "exception " << e.what();
     return false;
   }
+  return true;
 }
 
 //=============================================================================
@@ -305,6 +309,7 @@ bool PuttyWidget::addProcToWidget()
       if (retries > 15) {
         return false;
       }
+      puttyHandle = NULL;
       Thread::msleep(300);
     }
     if ( puttyHandle != NULL ) {
@@ -312,14 +317,21 @@ bool PuttyWidget::addProcToWidget()
       if (puttyParent == NULL) {
         return false;
       }
-      if (::ShowWindow(puttyHandle,SW_MAXIMIZE)) {
-
-        ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-        ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-        attached = true;
-        this->resize(this->size());
-      }
-      return true;
+      int loop = 0;
+      bool maxed = false;
+      do
+      {
+        Thread::msleep(10);
+        maxed = ::ShowWindow(puttyHandle,SW_MAXIMIZE);
+        if (maxed) {
+          ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+          ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+          this->resize(this->size());
+        }
+        loop++;
+      } while (!maxed && loop < 10);
+      attached = (loop < 10 && maxed);
+      return attached;
     }
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();

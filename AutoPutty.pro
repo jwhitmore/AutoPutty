@@ -24,13 +24,21 @@ MINOR = 0
 PATCH = 3
 VERSION_HEADER = .\version.h
 
-versiontarget.target = $$VERSION_HEADER
-versiontarget.commands = .\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
-versiontarget.depends = FORCE
+exists(.git) {
+  versiontarget.target = $$VERSION_HEADER
+  versiontarget.commands = .\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+  versiontarget.depends = FORCE
 
-PRE_TARGETDEPS += $$VERSION_HEADER
-QMAKE_EXTRA_TARGETS += versiontarget
+  PRE_TARGETDEPS += $$VERSION_HEADER
+  QMAKE_EXTRA_TARGETS += versiontarget
+} else {
+  versiontarget.target = $$VERSION_HEADER
+  versiontarget.commands = .\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
+  versiontarget.depends = FORCE
 
+  PRE_TARGETDEPS += $$VERSION_HEADER
+  QMAKE_EXTRA_TARGETS += versiontarget
+}
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
