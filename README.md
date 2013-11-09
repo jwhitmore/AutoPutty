@@ -26,7 +26,7 @@ That being said AutoPutty will build from Qt's dynamic libraries, it will just n
 
 Build Prerequisites
 ---------
-- QT 4+ (Static or Dynamic)
+- QT 4.8+ (Static or Dynamic)
 - Compiler (Visual C, or GCC)
 - nmake (Visual C), make, gmake, or mingw32-make
 - Qt Creator 2.8+ (Optional)
