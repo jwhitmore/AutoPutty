@@ -76,7 +76,7 @@ private:
   int  tabCount;
   bool closeAllTabs;
   bool validForm();
-  void startPutty(QString session, bool newTab);
+  void startPutty(QString session, bool newTab, bool standalone = false);
   void loadSessions();
   void loadUsers();
 
@@ -103,6 +103,7 @@ private slots:
   void on_actionRefresh_Sessions_triggered();
   void on_actionAbout_triggered();
   void on_txtPassphrase_editingFinished();
+  void on_actionOpen_Standalone_triggered();
 };
 
 #endif // MAINWINDOW_H

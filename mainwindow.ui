@@ -286,6 +286,11 @@
     <string>About AutoPutty</string>
    </property>
   </action>
+  <action name="actionOpen_Standalone">
+   <property name="text">
+    <string>Open Standalone</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>

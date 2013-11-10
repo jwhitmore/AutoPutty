@@ -156,7 +156,7 @@ bool MainWindow::validForm()
 //=============================================================================
 // Starts putty session
 //=============================================================================
-void MainWindow::startPutty(QString session, bool newTab)
+void MainWindow::startPutty(QString session, bool newTab, bool standalone)
 {
   FUNC_DEBUG;
   DEBUG << "session " << session;
@@ -179,7 +179,20 @@ void MainWindow::startPutty(QString session, bool newTab)
           return;
         }
       }
-    }    
+    }
+
+    if (standalone) {
+      QProcess procPutty;
+      QStringList args;
+      args << "-load" << session;
+      args << "-l" << user_itr->username;
+      args << "-pw" << user_itr->password;
+      args << "-P" << "22";
+      if (!procPutty.startDetached(puttyPath,args)) {
+        statusbar->showMessage("Failed to open putty.exe",5000);
+      }
+      return;
+    }
 
     PuttyContainer::iterator itr;
     QMainWindow* window = NULL;
@@ -262,20 +275,28 @@ void MainWindow::loadSessions()
       ActionWrapper* curTab = new ActionWrapper();
       curTab->setText("Open In Current Tab");
       curTab->setOptions("Session",(*itr));
+      ActionWrapper* standAlone = new ActionWrapper();
+      standAlone->setText("Open Standalone");
+      standAlone->setOptions("Session",(*itr));
       connect(newTab,SIGNAL(actionTriggered(ActionWrapper*)),this,SLOT(menuItemSelected(ActionWrapper*)));
       connect(curTab,SIGNAL(actionTriggered(ActionWrapper*)),this,SLOT(menuItemSelected(ActionWrapper*)));
+      connect(standAlone,SIGNAL(actionTriggered(ActionWrapper*)),this,SLOT(menuItemSelected(ActionWrapper*)));
 
       QMenu* sessionSubMenu = new QMenu((*itr));
       if (ui->actionCurrent_Tab->isChecked()) {
         sessionSubMenu->addAction(curTab->getAction());
         sessionSubMenu->addAction(newTab->getAction());
+        sessionSubMenu->addAction(standAlone->getAction());
         listBoxContextMenu->addAction(ui->actionOpen_In_Current_Tab);
         listBoxContextMenu->addAction(ui->actionOpen_in_New_Tab);
+        listBoxContextMenu->addAction(ui->actionOpen_Standalone);
       } else {
         sessionSubMenu->addAction(newTab->getAction());
         sessionSubMenu->addAction(curTab->getAction());
+        sessionSubMenu->addAction(standAlone->getAction());
         listBoxContextMenu->addAction(ui->actionOpen_in_New_Tab);
         listBoxContextMenu->addAction(ui->actionOpen_In_Current_Tab);
+        listBoxContextMenu->addAction(ui->actionOpen_Standalone);
       }
 
       sessionContextMenu->addMenu(sessionSubMenu);
@@ -483,11 +504,10 @@ void MainWindow::on_actionChange_Putty_Settings_triggered()
   FUNC_DEBUG;
   try
   {
-    QProcess* procPutty = new QProcess();
-    if (!procPutty->startDetached(puttyPath)) {
+    QProcess procPutty;
+    if (!procPutty.startDetached(puttyPath)) {
       statusbar->showMessage("Failed to open putty.exe",5000);
     }
-    delete procPutty;
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();
     statusbar->showMessage("Exception opening putty.exe",5000);
@@ -533,8 +553,9 @@ void MainWindow::on_actionChange_Tab_Title_triggered()
   }
 }
 
+
 //=============================================================================
-// Options->Tab Control->Open_In_Current_Tab menu item
+// Sessions->SessionName->Open_In_Current_Tab menu item
 //=============================================================================
 void MainWindow::on_actionOpen_In_Current_Tab_triggered()
 {
@@ -548,7 +569,7 @@ void MainWindow::on_actionOpen_In_Current_Tab_triggered()
 }
 
 //=============================================================================
-// Options->Tab Control->Open_in_New_Tab menu item
+// Sessions->SessionName->Open_In_New_Tab menu item
 //=============================================================================
 void MainWindow::on_actionOpen_in_New_Tab_triggered()
 {
@@ -558,6 +579,20 @@ void MainWindow::on_actionOpen_in_New_Tab_triggered()
   }
   for (int i = 0; i < ui->lwSessions->selectedItems().count(); i++) {
     startPutty(ui->lwSessions->selectedItems().at(i)->text(),true);
+  }
+}
+
+//=============================================================================
+// Sessions->SessionName->Open_Standalone menu item
+//=============================================================================
+void MainWindow::on_actionOpen_Standalone_triggered()
+{
+  FUNC_DEBUG;
+  if (!validForm()) {
+    return;
+  }
+  for (int i = 0; i < ui->lwSessions->selectedItems().count(); i++) {
+    startPutty(ui->lwSessions->selectedItems().at(i)->text(),false,true);
   }
 }
 
@@ -604,6 +639,9 @@ void MainWindow::menuItemSelected(ActionWrapper *actionWrapper)
   } else if (actionWrapper->getText() == "Open In Current Tab") {
     QString session = actionWrapper->getOption("Session");
     startPutty(session,false);
+  } else if (actionWrapper->getText() == "Open Standalone"){
+    QString session = actionWrapper->getOption("Session");
+    startPutty(session,false,true);
   } else {
     startPutty(actionWrapper->getText(),!ui->actionCurrent_Tab->isChecked());
   }
