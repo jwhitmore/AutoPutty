@@ -443,6 +443,6 @@ void PuttyWidget::topLevelChanged(bool topLevel)
     // TODO: Revert to default size
     POINT p;
     ::GetCursorPos(&p);
-    this->setGeometry(p.x, p.y, 700, 400);
+    this->setGeometry(p.x, p.y, 850, 500);
   }
 }
