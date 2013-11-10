@@ -41,6 +41,14 @@ About::About(QWidget *parent) :
   ui->lblEmail->setOpenExternalLinks(true);
   ui->lblDownloads->setText("<a href='https://github.com/jwhitmore/AutoPutty/releases'>Release Downloads</a>");
   ui->lblDownloads->setOpenExternalLinks(true);
+  ui->btnSupport->setMinimumSize(102,24);
+  ui->btnSupport->setMaximumSize(102,24);
+  ui->btnSupport->setText("");
+  ui->btnSupport->setStyleSheet("background-image:url(:/images/PaypalSupportButton.png)");
+  ui->btnSupport->setFlat(true);
+  ui->btnSupport->setDefault(false);
+  ui->btnSupport->setAutoDefault(false);
+  ui->btnSupport->setFocusPolicy(Qt::NoFocus);
 }
 
 About::~About()
@@ -56,4 +64,9 @@ void About::on_lblEmail_linkActivated(const QString &link)
 void About::on_lblDownloads_linkActivated(const QString &link)
 {
   QDesktopServices::openUrl(QUrl(link));
+}
+
+void About::on_btnSupport_clicked()
+{
+  QDesktopServices::openUrl(QUrl("https://www.paypal.com"));
 }

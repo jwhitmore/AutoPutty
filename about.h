@@ -39,8 +39,8 @@ public:
   
 private slots:
   void on_lblEmail_linkActivated(const QString &link);
-
   void on_lblDownloads_linkActivated(const QString &link);
+  void on_btnSupport_clicked();
 
 private:
   Ui::About *ui;
