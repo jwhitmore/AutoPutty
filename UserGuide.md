@@ -2,7 +2,7 @@
     - [New Session](#new-session)
     - [Passphrase](#passphrase)
     - [Forgot Passphrase](#forgot-passphrase)
-- [User And Password Setup][#user/password-setup]
+- [User And Password Setup][#user\/password-setup]
 - [Opening Sessions](#opening-sessions)
 - [Docking](#docking)
 - [Putty Menu](#putty-menu)
