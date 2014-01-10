@@ -1,82 +1,111 @@
-<!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Autoputty : Tabbed and dockable PuTTY connection manager written in Qt" />
 
-  <title>Autoputty</title>
-  <meta name="description" content="Tabbed and dockable PuTTY connection manager written in Qt">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Autoputty</title>
+  </head>
 
-</head>
+  <body>
 
-<body>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jwhitmore/AutoPutty">View on GitHub</a>
 
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Autoputty</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">Tabbed and dockable PuTTY connection manager written in Qt</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/jwhitmore/AutoPutty/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/jwhitmore/AutoPutty/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/jwhitmore/AutoPutty" class="code">View Autoputty on GitHub</a>
-        </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <h3>
-<a name="welcome-to-autoputty" class="anchor" href="#welcome-to-autoputty"><span class="octicon octicon-link"></span></a>Welcome to AutoPutty.</h3>
+          <h1 id="project_title">Autoputty</h1>
+          <h2 id="project_tagline">Tabbed and dockable PuTTY connection manager written in Qt</h2>
 
-<p>AutoPutty is a tabbed and dockable PuTTY session manager written in Qt:</p>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jwhitmore/AutoPutty/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jwhitmore/AutoPutty/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-<pre><code>$ git clone https://github.com/jwhitmore/AutoPutty.git AutoPutty
-$ cd AutoPutty
-$ git checkout origin
-$ qmake
-$ make
-</code></pre>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="---putty-manager" class="anchor" href="#---putty-manager"><span class="octicon octicon-link"></span></a><img src="https://github.com/jwhitmore/AutoPutty/blob/master/AutoPutty.png?raw=true" alt="AutoPutty.png" title="AutoPutty"> - PuTTY manager</h1>
 
-<h3>
-<a name="origin" class="anchor" href="#origin"><span class="octicon octicon-link"></span></a>Origin</h3>
+<p>AutoPutty is a portable, well-organized, and easy to use PuTTY connection manager.  It was originally a very small focused project to auto login into your putty sessions, but quickly grew into a very elegant way to manage putty logins/passwords and sessions.  You can move the windows around, dock and un-dock them, stack them, tab them, etc...  AutoPutty is licensed under GPLv3 and will always continue to be free and open source.</p>
 
-<p>AutoPutty started out because of one reason, to make PuTTY more efficient with multiple *nix machines.  Original intent was to be small and just auto-login to your sessions, but developed into a pretty decent way of handling PuTTY connections/sessions.  There are other connection managers for PuTTY that also use tabs and can auto log you in, but they didn't layout the way I wanted so I decided to write my own.  Enjoy. </p>
+<hr><h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<ul>
+<li>Auto login to putty session</li>
+<li>Docking/Un-docking putty sessions</li>
+<li>Stack putty sessions</li>
+<li>Design your putty session layout the way you like</li>
+<li>Tabbed interface with multiple docking putty sessions per tab</li>
+<li>Easy to use user/password setup screen</li>
+<li>Comes with PuTTY executable packaged with AutoPutty binary</li>
+<li>Right-Click context menus</li>
+<li>Change putty window titles and tab titles for organization</li>
+<li>Stores passwords obfuscated with your own passphrase key</li>
+</ul><h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>Windows XP or later</li>
+<li>AutoPutty</li>
+</ul><p>AutoPutty is statically linked currently to Qt 5+'s libs, packaged with putty executable, and statically linked to Visual C's libs.  The only thing you need to run a released version of AutoPutty is AutoPutty.</p>
+
+<p>That being said AutoPutty will build from Qt's dynamic libraries, it will just need packaged with Qt's libs or installed on any machine running AutoPutty.  AutoPutty should theoretically build with gcc or VC Express also, although it is not currently tested with most recent releases.</p>
+
+<h2>
+<a name="build-prerequisites" class="anchor" href="#build-prerequisites"><span class="octicon octicon-link"></span></a>Build Prerequisites</h2>
+
+<ul>
+<li>QT 5+ (Static or Dynamic)</li>
+<li>Compiler (Visual C, or GCC)</li>
+<li>nmake (Visual C), make, gmake, or mingw32-make</li>
+<li>Qt Creator 2.8+ (Optional)</li>
+<li>Make sure environment has Qt's Bin Path and that your C/C++ build, header, and library environment is set up</li>
+<li>AutoPutty src</li>
+</ul><h2>
+<a name="get-source" class="anchor" href="#get-source"><span class="octicon octicon-link"></span></a>Get Source</h2>
+
+<p><code>git clone https://github.com/jwhitmore/AutoPutty.git AutoPutty</code><br><code>cd AutoPutty</code><br><code>git checkout master</code>  </p>
+
+<h2>
+<a name="build-from-cmdexe" class="anchor" href="#build-from-cmdexe"><span class="octicon octicon-link"></span></a>Build From CMD.exe</h2>
+
+<p><code>cd AutoPutty</code><br><code>qmake</code><br><code>make</code> or <code>nmake</code> etc...   </p>
+
+<h2>
+<a name="build-from-qt-creator" class="anchor" href="#build-from-qt-creator"><span class="octicon octicon-link"></span></a>Build From Qt Creator</h2>
+
+<ul>
+<li>Open AutoPutty.pro in Qt Creator</li>
+<li>Set up project with appropriate compiler/kit</li>
+<li>Right Click AutoPutty Project-&gt;Run qmake</li>
+<li>Right Click AutoPutty Project-&gt;Build</li>
+</ul><p>Read the <a href="https://github.com/jwhitmore/AutoPutty/wiki/User%20Guide">User Guide</a> </p>
+
+<h2>
+<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h2>
 
 <p>Justin Whitmore (<a href="https://github.com/jwhitmore" class="user-mention">@jwhitmore</a>) Original Author.</p>
-        </article>
-      </div>
+      </section>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/jwhitmore" class="avatar"><img src="https://1.gravatar.com/avatar/264c4c19a65ab809466c00eed89cccd9?d=https%3A%2F%2Fidenticons.github.com%2Fb9ce747811d0c6deaeff90e6c7455029.png&amp;s=30" width="48" height="48"/></a> <a href="https://github.com/jwhitmore">jwhitmore</a> maintains <a href="https://github.com/jwhitmore/AutoPutty">Autoputty</a></p>
 
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Autoputty maintained by <a href="https://github.com/jwhitmore">jwhitmore</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
 
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/jwhitmore/AutoPutty/tarball/master" class="tar">tar</a><a href="https://github.com/jwhitmore/AutoPutty/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
+    
 
-  
-</body>
+  </body>
 </html>
