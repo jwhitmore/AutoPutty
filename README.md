@@ -1,5 +1,10 @@
 ![AutoPutty.png](https://github.com/jwhitmore/AutoPutty/blob/master/AutoPutty.png?raw=true "AutoPutty") - PuTTY manager
 =========
+
+**Get the latest release** [Latest Release](https://github.com/jwhitmore/AutoPutty/releases/latest)
+
+**Read the** [User Guide](https://github.com/jwhitmore/AutoPutty/wiki/User Guide) 
+
 AutoPutty is a portable, well-organized, and easy to use PuTTY connection manager.  It was originally a very small focused project to auto login into your putty sessions, but quickly grew into a very elegant way to manage putty logins/passwords and sessions.  You can move the windows around, dock and un-dock them, stack them, tab them, etc...  AutoPutty is licensed under GPLv3 and will always continue to be free and open source.
 ***
 Features
@@ -51,8 +56,6 @@ Build From Qt Creator
 - Set up project with appropriate compiler/kit
 - Right Click AutoPutty Project->Run qmake
 - Right Click AutoPutty Project->Build
-
-Read the [User Guide](https://github.com/jwhitmore/AutoPutty/wiki/User Guide) 
 
 Authors and Contributors
 ---------
