@@ -2,7 +2,7 @@
     - [New Session](#new-session)
     - [Passphrase](#passphrase)
     - [Forgot Passphrase](#forgot-passphrase)
-- [User And Password Setup][#user-and-password-setup]
+- [User And Password Setup][#user/password-setup]
 - [Opening Sessions](#opening-sessions)
 - [Docking](#docking)
 - [Putty Menu](#putty-menu)
@@ -42,7 +42,7 @@ AutoPutty requires a paraphrase to work correctly.  This is a passphrase created
 
 Easy just pick a new one then follow the guide for "**User and password setup**" with the new passphrase.
 
-User And Password Setup
+User/Password Setup
 ---------
 
 Go to **Options->User Setup**
