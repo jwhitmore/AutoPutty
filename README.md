@@ -1,7 +1,7 @@
 ![AutoPutty.png](https://github.com/jwhitmore/AutoPutty/blob/master/AutoPutty.png?raw=true "AutoPutty") - PuTTY manager
 =========
 
-**Get the latest release** [Latest Release](https://github.com/jwhitmore/AutoPutty/releases/latest)
+**Get the** [Latest Release](https://github.com/jwhitmore/AutoPutty/releases/latest)
 
 **Read the** [User Guide](UserGuide.md) 
 
