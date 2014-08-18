@@ -70,6 +70,7 @@ public:
   bool focus();
 
 protected:
+  bool eventFilter(QObject *object, QEvent *event);
   void resizeEvent(QResizeEvent* event);
   void keyPressEvent(QKeyEvent * event);
 

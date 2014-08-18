@@ -112,7 +112,11 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setFocusPolicy(Qt::ClickFocus);
   this->resize(parent->size());
-
+  if (this->internalWinId() == NULL) {
+    this->winId();
+  }
+  this->installEventFilter(this);
+  DEBUG << "this->winId()" << this->internalWinId();
   connect(this,SIGNAL(topLevelChanged(bool)),this,SLOT(topLevelChanged(bool)));
   btnFloat = this->findChild<QAbstractButton*>("qt_dockwidget_floatbutton");
   if (btnFloat) {
@@ -160,7 +164,7 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
       args << "-l" << username;
       args << "-pw" << password;
       args << "-P" << "22";
-
+      //return true;
       procPutty->start(puttyPath, args);
 
       if (procPutty->waitForStarted(4000)) {
@@ -181,6 +185,17 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
     return false;
   }
   return true;
+}
+
+bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
+{
+  if (event->type() == QEvent::WinIdChange) {
+    DEBUG << "winid change" << this->internalWinId();
+    if (this->internalWinId() != NULL) {
+      puttyParent = ::SetParent(puttyHandle, (HWND)this->internalWinId());
+    }
+  }
+  return false;
 }
 
 //=============================================================================
@@ -259,11 +274,14 @@ bool PuttyWidget::focus()
 void PuttyWidget::resizeEvent(QResizeEvent* event)
 {
   if (attached) {
+    DEBUG << "this->isTopLevel()" << this->isTopLevel();
     ::MoveWindow( puttyHandle, 1,
                  (this->isTopLevel() ? 1 : 21), this->width(),
                  (this->isTopLevel() ? this->height() : this->height() - 21),
                  true );
-    event->accept();
+    if (event) {
+      event->accept();
+    }
   }
 }
 
@@ -326,7 +344,9 @@ bool PuttyWidget::addProcToWidget()
         if (maxed) {
           ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
           ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-          this->resize(this->size());
+          DEBUG << "Force resize";
+          resizeEvent(NULL);
+          DEBUG << "After Force resize";
         }
         loop++;
       } while (!maxed && loop < 10);
@@ -438,6 +458,7 @@ void PuttyWidget::topLevelChanged(bool topLevel)
   if (btnFloat) {
     btnFloat->hide();
   }
+  DEBUG << "this->winId()" << this->internalWinId();
 
   if (topLevel) {
     // TODO: Revert to default size
@@ -445,4 +466,15 @@ void PuttyWidget::topLevelChanged(bool topLevel)
     ::GetCursorPos(&p);
     this->setGeometry(p.x, p.y, 850, 500);
   }
+
+  bool maxed = ::ShowWindow(puttyHandle,SW_MAXIMIZE);
+  if (maxed) {
+    ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+    ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+    DEBUG << "Force resize";
+    resizeEvent(NULL);
+    DEBUG << "After Force resize";
+    //this->resize(this->size());
+  }
+
 }
