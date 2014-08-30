@@ -1,7 +1,7 @@
 /*
  * puttywidget.cpp:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2013 Justin Whitmore
+ * Copyright (c) 2012-2014 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *
@@ -266,16 +266,6 @@ bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
     DEBUG << "winid change" << this->internalWinId();
     if (this->internalWinId() != NULL) {
       puttyParent = ::SetParent(puttyHandle, (HWND)this->internalWinId());
-      /*
-      bool maxed = ::ShowWindow(puttyHandle,SW_MAXIMIZE);
-      if (maxed) {
-        ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-        ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-        DEBUG << "Force resize";
-        this->forceResize();
-        DEBUG << "After Force resize";
-      }
-      */
     }
   }
   return false;
@@ -353,9 +343,7 @@ bool PuttyWidget::addProcToWidget()
         if (maxed) {
           ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
           ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-          DEBUG << "Force resize";
           this->forceResize();
-          DEBUG << "After Force resize";
         }
         loop++;
       } while (!maxed && loop < 10);
@@ -426,13 +414,11 @@ HWND PuttyWidget::findPuttyWindow(QProcess* process)
 //=============================================================================
 void PuttyWidget::forceResize()
 {
-  //if (attached) {
-    DEBUG << "this->isTopLevel()" << this->isTopLevel();
-    ::MoveWindow( puttyHandle, 1,
-                 (this->isTopLevel() ? 1 : 21), this->width(),
-                 (this->isTopLevel() ? this->height() : this->height() - 21),
-                 true );
-  //}
+  DEBUG << "this->isTopLevel()" << this->isTopLevel();
+  ::MoveWindow( puttyHandle, 1,
+               (this->isTopLevel() ? 1 : 21), this->width(),
+               (this->isTopLevel() ? this->height() : this->height() - 21),
+               true );
 }
 
 //-----------------------------------------------------------------------------
@@ -487,19 +473,12 @@ void PuttyWidget::topLevelChanged(bool topLevel)
     // TODO: Revert to default size
     POINT p;
     ::GetCursorPos(&p);
-    this->setGeometry(p.x, p.y, 850, 500);
+    this->setGeometry(p.x, p.y, 850, 500);    
   }
-
   bool maxed = ::ShowWindow(puttyHandle,SW_MAXIMIZE);
   if (maxed) {
     ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
     ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-
-    //this->resize(this->size());
   }
-
-  DEBUG << "Force resize";
   this->forceResize();
-  DEBUG << "After Force resize";
-
 }
