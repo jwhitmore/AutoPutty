@@ -187,17 +187,6 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
   return true;
 }
 
-bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
-{
-  if (event->type() == QEvent::WinIdChange) {
-    DEBUG << "winid change" << this->internalWinId();
-    if (this->internalWinId() != NULL) {
-      puttyParent = ::SetParent(puttyHandle, (HWND)this->internalWinId());
-    }
-  }
-  return false;
-}
-
 //=============================================================================
 // returns if QProcess is running
 //=============================================================================
@@ -269,19 +258,39 @@ bool PuttyWidget::focus()
 //----------------- Protected -------------------------------------------------
 
 //=============================================================================
+// Event filter to capture when the winid changes
+//=============================================================================
+bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
+{
+  if (event->type() == QEvent::WinIdChange) {
+    DEBUG << "winid change" << this->internalWinId();
+    if (this->internalWinId() != NULL) {
+      puttyParent = ::SetParent(puttyHandle, (HWND)this->internalWinId());
+      /*
+      bool maxed = ::ShowWindow(puttyHandle,SW_MAXIMIZE);
+      if (maxed) {
+        ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+        ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
+        DEBUG << "Force resize";
+        this->forceResize();
+        DEBUG << "After Force resize";
+      }
+      */
+    }
+  }
+  return false;
+}
+
+//=============================================================================
 // Called when the widget resizes and this resizes the PuTTY window inside also
 //=============================================================================
 void PuttyWidget::resizeEvent(QResizeEvent* event)
 {
   if (attached) {
-    DEBUG << "this->isTopLevel()" << this->isTopLevel();
-    ::MoveWindow( puttyHandle, 1,
-                 (this->isTopLevel() ? 1 : 21), this->width(),
-                 (this->isTopLevel() ? this->height() : this->height() - 21),
-                 true );
-    if (event) {
-      event->accept();
-    }
+    this->forceResize();
+  }
+  if (event) {
+    event->accept();
   }
 }
 
@@ -345,7 +354,7 @@ bool PuttyWidget::addProcToWidget()
           ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
           ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
           DEBUG << "Force resize";
-          resizeEvent(NULL);
+          this->forceResize();
           DEBUG << "After Force resize";
         }
         loop++;
@@ -412,6 +421,20 @@ HWND PuttyWidget::findPuttyWindow(QProcess* process)
   }
 }
 
+//=============================================================================
+// Force resize putty widget
+//=============================================================================
+void PuttyWidget::forceResize()
+{
+  //if (attached) {
+    DEBUG << "this->isTopLevel()" << this->isTopLevel();
+    ::MoveWindow( puttyHandle, 1,
+                 (this->isTopLevel() ? 1 : 21), this->width(),
+                 (this->isTopLevel() ? this->height() : this->height() - 21),
+                 true );
+  //}
+}
+
 //-----------------------------------------------------------------------------
 //----------------- Slots -----------------------------------------------------
 
@@ -471,10 +494,12 @@ void PuttyWidget::topLevelChanged(bool topLevel)
   if (maxed) {
     ::SetWindowLongPtr(puttyHandle,GWL_STYLE,::GetWindowLong(puttyHandle, GWL_STYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
     ::SetWindowLongPtr(puttyHandle,GWL_EXSTYLE,::GetWindowLong(puttyHandle, GWL_EXSTYLE) & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_VSCROLL));
-    DEBUG << "Force resize";
-    resizeEvent(NULL);
-    DEBUG << "After Force resize";
+
     //this->resize(this->size());
   }
+
+  DEBUG << "Force resize";
+  this->forceResize();
+  DEBUG << "After Force resize";
 
 }

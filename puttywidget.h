@@ -86,6 +86,7 @@ private:
   QAction* actionChangeTitle;
   bool addProcToWidget();
   HWND findPuttyWindow(QProcess* process);
+  void forceResize();
 
 private slots:
   void processStateChanged(QProcess::ProcessState state);

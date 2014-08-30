@@ -22,18 +22,18 @@
 MAJOR = 5
 MINOR = 0
 PATCH = 5
-VERSION_HEADER = .\version.h
+VERSION_HEADER = version.h
 
 exists(.git) {
   versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = .\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
   versiontarget.depends = FORCE
 
   PRE_TARGETDEPS += $$VERSION_HEADER
   QMAKE_EXTRA_TARGETS += versiontarget
 } else {
   versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = .\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
+  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
   versiontarget.depends = FORCE
 
   PRE_TARGETDEPS += $$VERSION_HEADER
