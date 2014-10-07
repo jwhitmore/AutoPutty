@@ -68,5 +68,18 @@ void About::on_lblDownloads_linkActivated(const QString &link)
 
 void About::on_btnSupport_clicked()
 {
-  QDesktopServices::openUrl(QUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=justin%40justinwhitmore%2ecom&lc=US&item_name=AutoPutty%20Support&item_number=AutoPuttySupport&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
+  QString url = "";
+
+  QString business = "justin@justinwhitmore.com";
+  QString description = "Donation";
+  QString country = "US";
+  QString currency = "USD";
+
+  url = QString("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=%1&lc=%2&item_name=%3&currency_code=%4&bn=PP%2dDonationsBF")
+      .arg(business)
+      .arg(country)
+      .arg(description)
+      .arg(currency);
+
+  QDesktopServices::openUrl(QUrl(url));
 }

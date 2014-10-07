@@ -613,6 +613,7 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_txtPassphrase_editingFinished()
 {
   FUNC_DEBUG;
+  if (passphrase == ui->txtPassphrase->text()) { return; }
   if (!ui->txtPassphrase->text().isEmpty()) {
     loadUsers();
   } else {
@@ -620,6 +621,7 @@ void MainWindow::on_txtPassphrase_editingFinished()
       userinfo->clear();
     }
   }
+  passphrase = ui->txtPassphrase->text();
 }
 
 //=============================================================================

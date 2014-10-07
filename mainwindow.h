@@ -73,6 +73,7 @@ private:
   UserInfo* userinfo;
   PuttyContainer container;
   QString puttyPath;
+  QString passphrase;
   int  tabCount;
   bool closeAllTabs;
   bool validForm();

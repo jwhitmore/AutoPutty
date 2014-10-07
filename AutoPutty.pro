@@ -21,7 +21,7 @@
 #*/
 MAJOR = 5
 MINOR = 0
-PATCH = 5
+PATCH = 6
 VERSION_HEADER = version.h
 
 exists(.git) {
