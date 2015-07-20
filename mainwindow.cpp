@@ -22,6 +22,7 @@
 
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QClipboard>
 #include "mainwindow.h"
 #include "about.h"
 #include "usersetup.h"
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   this->restoreGeometry(iniHelper->readByteArray("Application","geometry"));
   ui->actionCurrent_Tab->setChecked(iniHelper->readValue("Application","defaultTabAction").toInt());
+  ui->actionCopy_Password_to_Clipboard->setChecked(iniHelper->readValue("Application","copyPassToClipboard").toInt());
   actionSessions.clear();
 
   ui->tabWidget->setMovable(true);
@@ -129,6 +131,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
   iniHelper->writeValue("Application","geometry",this->saveGeometry());
   iniHelper->writeValue("Application","defaultTabAction",(int)ui->actionCurrent_Tab->isChecked());
+  iniHelper->writeValue("Application","copyPassToClipboard",(int)ui->actionCopy_Password_to_Clipboard->isChecked());
   if ( iniHelper->readValue("Application","PauseInMsecs").isEmpty() ) {
     iniHelper->writeValue("Application","PauseInMsecs",300);
   }
@@ -160,6 +163,8 @@ void MainWindow::startPutty(QString session, bool newTab, bool standalone)
 {
   FUNC_DEBUG;
   DEBUG << "session " << session;
+  QString protocol = "ssh";
+  QString port = "22";
   try
   {
     if (userinfo->isEmpty()) {
@@ -181,13 +186,26 @@ void MainWindow::startPutty(QString session, bool newTab, bool standalone)
       }
     }
 
+    PUTTY_SETTINGS_MAP::Iterator psm_itr;
+    psm_itr = puttySettingsMap.find(session);
+    if (psm_itr != puttySettingsMap.end()) {
+      protocol = psm_itr->protocol;
+      port = psm_itr->port;
+      //QMessageBox::warning(this,"",QString("%1 %2").arg(protocol).arg(port));
+    }
+    if (ui->actionCopy_Password_to_Clipboard->isChecked() && protocol != "ssh") {
+      QClipboard *clipboard = QApplication::clipboard();
+      clipboard->setText(QString("%1%2").arg(user_itr->password).arg("\n"));
+    }
     if (standalone) {
       QProcess procPutty;
       QStringList args;
       args << "-load" << session;
       args << "-l" << user_itr->username;
-      args << "-pw" << user_itr->password;
-      args << "-P" << "22";
+      if (protocol == "ssh") {
+        args << "-pw" << user_itr->password;
+      }
+      args << "-P" << port;
       if (!procPutty.startDetached(puttyPath,args)) {
         statusbar->showMessage("Failed to open putty.exe",5000);
       }
@@ -238,7 +256,9 @@ void MainWindow::startPutty(QString session, bool newTab, bool standalone)
 
     if (!putty->startPuttyProcess(puttyPath,session,
                                   user_itr->username,
-                                  user_itr->password)) {
+                                  user_itr->password,
+                                  protocol,
+                                  port)) {
       window->removeDockWidget(putty);
       pwProcessEnded(putty);
       delete putty;
@@ -262,13 +282,19 @@ void MainWindow::loadSessions()
   sessionContextMenu->clear();
   ui->lwSessions->clear();
   listBoxContextMenu->clear();
+  puttySettingsMap.clear();
 
   if ( registrySettings != NULL) {
     QStringList list = registrySettings->childGroups();
     QStringList::iterator itr;
     for (itr = list.begin(); itr != list.end(); itr++) {
       (*itr).replace("%20"," ");
-
+      registrySettings->beginGroup((*itr));
+      PUTTY_SETTINGS_T puttySetting;
+      puttySetting.port = registrySettings->value("PortNumber").toString();
+      puttySetting.protocol = registrySettings->value("Protocol").toString();
+      puttySettingsMap.insert((*itr), puttySetting);
+      registrySettings->endGroup();
       ActionWrapper* newTab = new ActionWrapper();
       newTab->setText("Open In New Tab");
       newTab->setOptions("Session",(*itr));

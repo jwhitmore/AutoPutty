@@ -85,6 +85,7 @@
     <addaction name="actionUser_Setup"/>
     <addaction name="actionRefresh_Sessions"/>
     <addaction name="actionChange_Putty_Settings"/>
+    <addaction name="actionCopy_Password_to_Clipboard"/>
     <addaction name="separator"/>
     <addaction name="menuTab_Control"/>
    </widget>
@@ -289,6 +290,17 @@
   <action name="actionOpen_Standalone">
    <property name="text">
     <string>Open Standalone</string>
+   </property>
+  </action>
+  <action name="actionCopy_Password_to_Clipboard">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Copy Password to Clipboard</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy's password to clipboard for all sessions &lt;span style=&quot; font-weight:600;&quot;&gt;except ssh.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>

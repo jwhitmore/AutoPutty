@@ -61,7 +61,8 @@ class PuttyWidget : public QDockWidget
 public:
   explicit PuttyWidget(QWidget *parent = 0);
   ~PuttyWidget();
-  bool startPuttyProcess(QString puttyPath, QString session, QString username, QString password);
+  bool startPuttyProcess(QString puttyPath, QString session, QString username,
+                         QString password, QString protocol, QString port);
   void setTitle(QString title);
   void setPause(unsigned long msec);
   QString getTitle();

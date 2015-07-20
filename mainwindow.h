@@ -42,7 +42,12 @@
 #include "actionwrapper.h"
 #include "userinfo.h"
 
+struct PUTTY_SETTINGS_T {
+  QString protocol;
+  QString port;
+};
 
+typedef QMap<QString, PUTTY_SETTINGS_T> PUTTY_SETTINGS_MAP;
 
 namespace Ui {
 class MainWindow;
@@ -71,6 +76,7 @@ private:
   QMenu* sessionContextMenu;
   QList<ActionWrapper*> actionSessions;
   UserInfo* userinfo;
+  PUTTY_SETTINGS_MAP puttySettingsMap;
   PuttyContainer container;
   QString puttyPath;
   QString passphrase;

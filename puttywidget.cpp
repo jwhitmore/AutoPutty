@@ -149,7 +149,7 @@ PuttyWidget::~PuttyWidget()
 //=============================================================================
 // Creates QProcess object and starts the processes off then calls
 //=============================================================================
-bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString username, QString password)
+bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString username, QString password, QString protocol, QString port)
 {
   FUNC_DEBUG;
   try
@@ -162,9 +162,14 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
       QStringList args;
       args << "-load" << session;
       args << "-l" << username;
-      args << "-pw" << password;
-      args << "-P" << "22";
+      if (protocol == "ssh") {
+        args << "-pw" << password;
+      }
+      args << "-P" << port;
       //return true;
+      for (int i = 0; i < args.size(); i++) {
+        DEBUG << QString("arugments: %1").arg((args.at(i)));
+      }
       procPutty->start(puttyPath, args);
 
       if (procPutty->waitForStarted(4000)) {
