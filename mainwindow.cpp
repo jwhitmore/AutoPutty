@@ -288,13 +288,13 @@ void MainWindow::loadSessions()
     QStringList list = registrySettings->childGroups();
     QStringList::iterator itr;
     for (itr = list.begin(); itr != list.end(); itr++) {
-      (*itr).replace("%20"," ");
       registrySettings->beginGroup((*itr));
       PUTTY_SETTINGS_T puttySetting;
       puttySetting.port = registrySettings->value("PortNumber").toString();
       puttySetting.protocol = registrySettings->value("Protocol").toString();
       puttySettingsMap.insert((*itr), puttySetting);
       registrySettings->endGroup();
+      (*itr).replace("%20"," ");      
       ActionWrapper* newTab = new ActionWrapper();
       newTab->setText("Open In New Tab");
       newTab->setOptions("Session",(*itr));
