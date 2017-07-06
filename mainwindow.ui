@@ -105,10 +105,20 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuLayout">
+    <property name="title">
+     <string>Layout</string>
+    </property>
+    <addaction name="actionSave_Current_Layout"/>
+    <addaction name="actionManage_Layouts"/>
+    <addaction name="actionTk"/>
+    <addaction name="separator"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuView"/>
    <addaction name="menuSessions"/>
+   <addaction name="menuLayout"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QDockWidget" name="dockControl">
@@ -301,6 +311,21 @@
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy's password to clipboard for all sessions &lt;span style=&quot; font-weight:600;&quot;&gt;except ssh.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionSave_Current_Layout">
+   <property name="text">
+    <string>Save Current Layout...</string>
+   </property>
+  </action>
+  <action name="actionTk">
+   <property name="text">
+    <string>tk</string>
+   </property>
+  </action>
+  <action name="actionManage_Layouts">
+   <property name="text">
+    <string>Manage Layouts</string>
    </property>
   </action>
  </widget>

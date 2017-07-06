@@ -26,8 +26,12 @@
 #include "mainwindow.h"
 #include "about.h"
 #include "usersetup.h"
+#include "managelayouts.h"
 #include "debug.h"
 #include "ui_mainwindow.h"
+
+int layoutID = 0;
+int puttyID = 0;
 
 //=============================================================================
 // Sets up registry object and Ini object and adds the sessions from the
@@ -58,6 +62,12 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->actionCurrent_Tab->setChecked(iniHelper->readValue("Application","defaultTabAction").toInt());
   ui->actionCopy_Password_to_Clipboard->setChecked(iniHelper->readValue("Application","copyPassToClipboard").toInt());
   actionSessions.clear();
+
+  // Set our OrgName and AppName (so QSettings is consistent)
+  QCoreApplication::setOrganizationName("jjw");
+  QCoreApplication::setApplicationName("autoputty");
+
+  layouts = new dockLayout(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
   ui->tabWidget->setMovable(true);
   if ( registrySettings != NULL) {
@@ -102,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->tabWidget->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->lwSessions->setContextMenuPolicy(Qt::CustomContextMenu);
   loadSessions();
+  loadLayouts();
 }
 
 //=============================================================================
@@ -154,6 +165,124 @@ bool MainWindow::validForm()
     return false;
   }
   return true;
+}
+
+//=============================================================================
+// Starts putty session
+//=============================================================================
+void MainWindow::startPutty(QString session, QString objName, bool newTab, bool standalone)
+{
+  FUNC_DEBUG;
+  DEBUG << "session " << session;
+  QString protocol = "ssh";
+  QString port = "22";
+  try
+  {
+    if (userinfo->isEmpty()) {
+      loadUsers();
+    }
+    UserInfo::iterator user_itr;
+    user_itr = userinfo->find(session);
+    if (user_itr == userinfo->end()) {
+      statusbar->showMessage("User info not found in AutoPutty.ini. Check user setup.",5000);
+      return;
+    } else {
+      if ( user_itr->username.isEmpty() || user_itr->password.isEmpty() ) {
+        loadUsers();
+        user_itr = userinfo->find(session);
+        if (user_itr == userinfo->end()) {
+          statusbar->showMessage("User info not found in AutoPutty.ini. Check user setup.",5000);
+          return;
+        }
+      }
+    }
+
+    PUTTY_SETTINGS_MAP::Iterator psm_itr;
+    psm_itr = puttySettingsMap.find(session);
+    if (psm_itr != puttySettingsMap.end()) {
+      protocol = psm_itr->protocol;
+      port = psm_itr->port;
+      //QMessageBox::warning(this,"",QString("%1 %2").arg(protocol).arg(port));
+    }
+    if (ui->actionCopy_Password_to_Clipboard->isChecked() && protocol != "ssh") {
+      QClipboard *clipboard = QApplication::clipboard();
+      clipboard->setText(QString("%1%2").arg(user_itr->password).arg("\n"));
+    }
+    if (standalone) {
+      QProcess procPutty;
+      QStringList args;
+      args << "-load" << session;
+      args << "-l" << user_itr->username;
+      if (protocol == "ssh") {
+        args << "-pw" << user_itr->password;
+      }
+      args << "-P" << port;
+      if (!procPutty.startDetached(puttyPath,args)) {
+        statusbar->showMessage("Failed to open putty.exe",5000);
+      }
+      return;
+    }
+
+    PuttyContainer::iterator itr;
+    QMainWindow* window = NULL;
+    PuttyWidget* lastPutty = NULL;
+    if (!newTab) {
+      itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+      if (itr != container.end()) {
+        window = itr.key();
+        window->setProperty("layoutName", QString("UnsavedLayout%1").arg(layoutID++));
+        if (!itr.value().isEmpty()) {
+          lastPutty = itr.value().last();
+        }
+      }
+      if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
+        window = (QMainWindow*)ui->tabWidget->currentWidget();
+      }
+    }
+
+    if ( window == NULL ) {
+      window = new QMainWindow(ui->tabWidget);
+      window->setAttribute(Qt::WA_DeleteOnClose,true);
+      window->setWindowFlags(Qt::Widget);
+      window->setCentralWidget(NULL);
+      window->setDockNestingEnabled(true);
+      window->setObjectName(QString("LayoutTab%1").arg(layoutID++));
+    }
+
+    PuttyWidget* putty = new PuttyWidget(window);
+    putty->setObjectName(objName);
+    putty->setPause(iniHelper->readValue("Application","PauseInMsecs").toULong());
+    window->addDockWidget(Qt::LeftDockWidgetArea,putty);
+    if (lastPutty != NULL) {
+      window->tabifyDockWidget(lastPutty,putty);
+    }
+
+    int idx = 0;
+    if (ui->tabWidget->currentIndex() < 0 || newTab) {
+      idx = ui->tabWidget->addTab(window,QString("Tab %1").arg(tabCount++));
+      ui->tabWidget->setCurrentIndex(idx);
+    }
+
+    connect(putty,SIGNAL(processStoppedSignal(PuttyWidget*)),this,SLOT(pwProcessEnded(PuttyWidget*)));
+    connect(putty,SIGNAL(changeTitleSignal(PuttyWidget*)),this,SLOT(pwChangeTitle(PuttyWidget*)));
+
+    container.add(window,putty);
+
+    if (!putty->startPuttyProcess(puttyPath,session,
+                                  user_itr->username,
+                                  user_itr->password,
+                                  protocol,
+                                  port)) {
+      window->removeDockWidget(putty);
+      pwProcessEnded(putty);
+      delete putty;
+      statusbar->showMessage("Error starting putty. Check User Setup.",5000);
+      return;
+    }
+
+  } catch (std::exception &e) {
+    DEBUG << "exception " << e.what();
+  }
 }
 
 //=============================================================================
@@ -219,6 +348,7 @@ void MainWindow::startPutty(QString session, bool newTab, bool standalone)
       itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
       if (itr != container.end()) {
         window = itr.key();
+        window->setProperty("layoutName", QString("UnsavedLayout%1").arg(layoutID++));
         if (!itr.value().isEmpty()) {
           lastPutty = itr.value().last();
         }
@@ -237,6 +367,7 @@ void MainWindow::startPutty(QString session, bool newTab, bool standalone)
     }
 
     PuttyWidget* putty = new PuttyWidget(window);
+    putty->setObjectName(QString("UnsavedPutty%1").arg(puttyID++));
     putty->setPause(iniHelper->readValue("Application","PauseInMsecs").toULong());
     window->addDockWidget(Qt::LeftDockWidgetArea,putty);
     if (lastPutty != NULL) {
@@ -661,18 +792,29 @@ void MainWindow::menuItemSelected(ActionWrapper *actionWrapper)
     return;
   }
 
-  if (actionWrapper->getText() == "Open In New Tab") {
-    QString session = actionWrapper->getOption("Session");
-    startPutty(session,true);
-  } else if (actionWrapper->getText() == "Open In Current Tab") {
-    QString session = actionWrapper->getOption("Session");
-    startPutty(session,false);
-  } else if (actionWrapper->getText() == "Open Standalone"){
-    QString session = actionWrapper->getOption("Session");
-    startPutty(session,false,true);
+  DEBUG << "getOption Session: " << actionWrapper->getOption("Session");
+  DEBUG << "getOption Layout : " << actionWrapper->getOption("Layout");
+
+
+  if (!actionWrapper->getOption("Session").isEmpty()) {
+    if (actionWrapper->getText() == "Open In New Tab") {
+      QString session = actionWrapper->getOption("Session");
+      startPutty(session,true);
+    } else if (actionWrapper->getText() == "Open In Current Tab") {
+      QString session = actionWrapper->getOption("Session");
+      startPutty(session,false);
+    } else if (actionWrapper->getText() == "Open Standalone"){
+      QString session = actionWrapper->getOption("Session");
+      startPutty(session,false,true);
+    } else {
+      startPutty(actionWrapper->getText(),!ui->actionCurrent_Tab->isChecked());
+    }
+  } else if (!actionWrapper->getOption("Layout").isEmpty()) {
+    openLayout(actionWrapper->getOption("Layout"));
   } else {
-    startPutty(actionWrapper->getText(),!ui->actionCurrent_Tab->isChecked());
+    DEBUG << "wut?";
   }
+
 }
 
 //=============================================================================
@@ -715,4 +857,190 @@ void MainWindow::pwChangeTitle(PuttyWidget* widget)
   if (ok && !text.isEmpty()) {
     widget->setTitle(text);
   }
+}
+
+//=============================================================================
+//=============================================================================
+void MainWindow::on_actionSave_Current_Layout_triggered()
+{
+  FUNC_DEBUG;
+
+  if ( ui->tabWidget->currentIndex() < 0 ) {
+    statusbar->showMessage("Error: No sessions are open", 5000);
+    return;
+  }
+
+  PuttyContainer::iterator itr;
+  QMainWindow* window = NULL;
+
+  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  if (itr != container.end()) {
+    window = itr.key();
+  }
+  if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
+    window = (QMainWindow*)ui->tabWidget->currentWidget();
+  }
+
+  QString layoutName;
+
+  if ( window->property("layoutName").toString().contains("UnsavedLayout")) {
+    bool ok;
+    layoutName = QInputDialog::getText(this, "Unsaved Layout", "Enter a new name for your layout:", QLineEdit::Normal, "", &ok);
+    if (ok && !layoutName.isEmpty()) {
+      window->setProperty("layoutName", layoutName);
+    } else {
+      statusbar->showMessage("Layout was not saved. No layout name was specified.", 5000);
+      return;
+    }
+  } else {
+    layoutName = window->property("layoutName").toString();
+  }
+
+  DEBUG << "layoutName: " << layoutName;
+  DEBUG << "windowName: " << window->property("layoutName");
+
+  QSettings settings;
+  settings.setValue(QString("layout/%1/geometry").arg(layoutName), window->saveGeometry());
+  settings.setValue(QString("layout/%1/windowState").arg(layoutName), window->saveState());
+  settings.setValue(QString("layout/%1/objectName").arg(layoutName), window->objectName());
+
+  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  if (itr != container.end()) {
+    DEBUG << "-- " << itr.key()->property("layoutName").toString();
+    for (int i = 0; i < itr.value().size(); i++) {
+      //settings.setValue(QString("layout/%1/sessions/%2").arg(layoutName).arg(itr.value().at(i)->getSession()), "");
+      settings.setValue(QString("layout/%1/sessions/%2/sessionName").arg(layoutName).arg(i+1), itr.value().at(i)->getSession());
+      settings.setValue(QString("layout/%1/sessions/%2/objectName").arg(layoutName).arg(i+1), itr.value().at(i)->objectName());
+      //statusbar->showMessage(itr.value().at(i)->getSession());
+      DEBUG << "---- " << (i+1) << "/" << itr.value().size() << ": " << itr.value().at(i)->getSession();
+    }
+  }
+
+  // Add a new option to the Layouts menu
+  ActionWrapper* openLayout = new ActionWrapper();
+  openLayout->setText(layoutName);
+  openLayout->setOptions("Layout",layoutName);
+  connect(openLayout,SIGNAL(actionTriggered(ActionWrapper*)),this,SLOT(menuItemSelected(ActionWrapper*)));
+  ui->menuLayout->addAction(openLayout->getAction());
+
+}
+
+
+//=============================================================================
+//=============================================================================
+void MainWindow::loadLayouts()
+{
+  FUNC_DEBUG;
+
+  if ( layouts != NULL) {
+
+    QStringList list = layouts->getLayoutNames();
+    QStringList::iterator itr;
+
+    for (itr = list.begin(); itr != list.end(); itr++) {
+
+      //registrySettings->beginGroup((*itr));
+
+      DEBUG << "itr [" << (*itr) << "]";
+
+      (*itr).replace("%20"," ");
+      ActionWrapper* openLayout = new ActionWrapper();
+      openLayout->setText((*itr));
+      openLayout->setOptions("Layout",(*itr));
+      connect(openLayout,SIGNAL(actionTriggered(ActionWrapper*)),this,SLOT(menuItemSelected(ActionWrapper*)));
+
+      ui->menuLayout->addAction(openLayout->getAction());
+    }
+
+  } else {
+    statusbar->showMessage("PuTTY Registry Settings not found.",5000);
+  }
+}
+
+//=============================================================================
+//=============================================================================
+void MainWindow::openLayout(QString name)
+{
+  FUNC_DEBUG;
+
+  QVector<SessionObjectName> sessions = layouts->getLayoutSessions(name);
+  QString objName = layouts->getLayoutObjectName(name);
+
+  DEBUG << "Layout " << name << " (object: " << objName << ") - " << sessions.count() << " sessions.";
+
+  for ( int i = 0; i < sessions.count(); i++ ) {
+    DEBUG << "Starting Session " << (i+1) << ": " << sessions.at(i).session << " -- " << sessions.at(i).objName;
+    if ( i == 0 ) {
+      this->startPutty(sessions.at(i).session, sessions.at(i).objName, true, false);
+    } else {
+      this->startPutty(sessions.at(i).session, sessions.at(i).objName, false, false);
+    }
+  }
+
+  PuttyContainer::iterator itr;
+  QMainWindow* window = NULL;
+  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  if (itr != container.end()) {
+    window = itr.key();
+  }
+  if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
+    window = (QMainWindow*)ui->tabWidget->currentWidget();
+  }
+
+  window->setObjectName(objName);
+
+  DEBUG << "sleeping 5000ms";
+  Thread::msleep(500);
+  DEBUG << "done. arranging layout...";
+
+  window->restoreGeometry(layouts->getLayoutGeometry(name));
+  window->restoreState(layouts->getLayoutState(name));
+
+}
+
+//=============================================================================
+//=============================================================================
+void MainWindow::on_actionTk_triggered()
+{
+  FUNC_DEBUG;
+  DEBUG << "-- CONTAINER --";
+  this->container.dump();
+
+  DEBUG << "-- QSETTINGS --";
+  QSettings settings;
+  settings.beginGroup("layout");
+
+  QStringList layoutNames = settings.childGroups();
+  DEBUG << "Groups: " << layoutNames;
+  settings.endGroup();
+
+  for ( int i = 0; i < layoutNames.count(); i++ ) {
+
+    DEBUG << "-- " << layoutNames.at(i);
+
+    settings.beginGroup(QString("layout/%1/sessions").arg(layoutNames.at(i)));
+    QStringList sessionNames = settings.childGroups();
+
+    for ( int j = 0; j < sessionNames.count(); j++ ) {
+      DEBUG << "---- " << sessionNames.at(j);
+    }
+
+    settings.endGroup();
+  }
+}
+
+//=============================================================================
+//=============================================================================
+void MainWindow::on_actionManage_Layouts_triggered()
+{
+  FUNC_DEBUG;
+
+  if ( layouts != NULL) {
+    manageLayouts* manager = new manageLayouts(this);
+    manager->setLayouts(layouts);
+    manager->exec();
+  } else {
+    DEBUG << "dockLayout layouts is NULL";
+  }
+
 }

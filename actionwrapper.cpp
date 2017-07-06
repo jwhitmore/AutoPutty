@@ -95,7 +95,9 @@ void ActionWrapper::setOptions(QString name, QString value)
 QString ActionWrapper::getOption(QString name)
 {
   FUNC_DEBUG;
-  return options.find(name).value();
+
+  if (options.find(name) == options.end()) return "";
+  else return options.find(name).value();
 }
 
 //=============================================================================
