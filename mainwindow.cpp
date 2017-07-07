@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
   actionSessions.clear();
 
   // Set our OrgName and AppName (so QSettings is consistent)
-  QCoreApplication::setOrganizationName("jjw");
+  QCoreApplication::setOrganizationName("autoputty");
   QCoreApplication::setApplicationName("autoputty");
 
   layouts = new dockLayout(QCoreApplication::organizationName(), QCoreApplication::applicationName());
@@ -288,125 +288,6 @@ void MainWindow::startPutty(SessionCfg session, bool newTab, bool standalone)
     DEBUG << "exception " << e.what();
   }
 }
-
-//=============================================================================
-// Starts putty session
-//=============================================================================
-/*
-void MainWindow::startPutty(QString session, bool newTab, bool standalone)
-{
-  FUNC_DEBUG;
-  DEBUG << "session " << session;
-  QString protocol = "ssh";
-  QString port = "22";
-  try
-  {
-    if (userinfo->isEmpty()) {
-      loadUsers();
-    }
-    UserInfo::iterator user_itr;
-    user_itr = userinfo->find(session);
-    if (user_itr == userinfo->end()) {
-      statusbar->showMessage("User info not found in AutoPutty.ini. Check user setup.",5000);
-      return;
-    } else {
-      if ( user_itr->username.isEmpty() || user_itr->password.isEmpty() ) {
-        loadUsers();
-        user_itr = userinfo->find(session);
-        if (user_itr == userinfo->end()) {
-          statusbar->showMessage("User info not found in AutoPutty.ini. Check user setup.",5000);
-          return;
-        }
-      }
-    }
-
-    PUTTY_SETTINGS_MAP::Iterator psm_itr;
-    psm_itr = puttySettingsMap.find(session);
-    if (psm_itr != puttySettingsMap.end()) {
-      protocol = psm_itr->protocol;
-      port = psm_itr->port;
-      //QMessageBox::warning(this,"",QString("%1 %2").arg(protocol).arg(port));
-    }
-    if (ui->actionCopy_Password_to_Clipboard->isChecked() && protocol != "ssh") {
-      QClipboard *clipboard = QApplication::clipboard();
-      clipboard->setText(QString("%1%2").arg(user_itr->password).arg("\n"));
-    }
-    if (standalone) {
-      QProcess procPutty;
-      QStringList args;
-      args << "-load" << session;
-      args << "-l" << user_itr->username;
-      if (protocol == "ssh") {
-        args << "-pw" << user_itr->password;
-      }
-      args << "-P" << port;
-      if (!procPutty.startDetached(puttyPath,args)) {
-        statusbar->showMessage("Failed to open putty.exe",5000);
-      }
-      return;
-    }
-
-    PuttyContainer::iterator itr;
-    QMainWindow* window = NULL;
-    PuttyWidget* lastPutty = NULL;
-    if (!newTab) {
-      itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
-      if (itr != container.end()) {
-        window = itr.key();
-        if (!itr.value().isEmpty()) {
-          lastPutty = itr.value().last();
-        }
-      }
-      if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
-        window = (QMainWindow*)ui->tabWidget->currentWidget();
-      }
-    }
-
-    if ( window == NULL ) {
-      window = new QMainWindow(ui->tabWidget);
-      window->setAttribute(Qt::WA_DeleteOnClose,true);
-      window->setWindowFlags(Qt::Widget);
-      window->setCentralWidget(NULL);
-      window->setDockNestingEnabled(true);
-      window->setProperty("layoutName", QString("UnsavedLayout%1").arg(layoutID++));
-    }
-
-    PuttyWidget* putty = new PuttyWidget(window);
-    putty->setObjectName(QString("UnsavedPutty%1").arg(puttyID++));
-    putty->setPause(iniHelper->readValue("Application","PauseInMsecs").toULong());
-    window->addDockWidget(Qt::LeftDockWidgetArea,putty);
-    if (lastPutty != NULL) {
-      window->tabifyDockWidget(lastPutty,putty);
-    }
-
-    int idx = 0;
-    if (ui->tabWidget->currentIndex() < 0 || newTab) {
-      idx = ui->tabWidget->addTab(window,QString("Tab %1").arg(tabCount++));
-      ui->tabWidget->setCurrentIndex(idx);
-    }
-
-    connect(putty,SIGNAL(processStoppedSignal(PuttyWidget*)),this,SLOT(pwProcessEnded(PuttyWidget*)));
-    connect(putty,SIGNAL(changeTitleSignal(PuttyWidget*)),this,SLOT(pwChangeTitle(PuttyWidget*)));
-    
-    container.add(window,putty);
-
-    if (!putty->startPuttyProcess(puttyPath,session,
-                                  user_itr->username,
-                                  user_itr->password,
-                                  protocol,
-                                  port)) {
-      window->removeDockWidget(putty);
-      pwProcessEnded(putty);
-      delete putty;
-      statusbar->showMessage("Error starting putty. Check User Setup.",5000);
-      return;
-    }
-
-  } catch (std::exception &e) {
-    DEBUG << "exception " << e.what();
-  }
-}
-*/
 
 //=============================================================================
 // Load sessions from registry settings
@@ -958,8 +839,9 @@ void MainWindow::on_actionSave_Current_Layout_triggered()
 
       DEBUG << "---- " << (i+1) << "/" << itr.value().size() << ": " << pw->getSession();
     }
-
   }
+
+  ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), layoutName);
 
   if ( newLayout ) {
     loadLayouts();
@@ -1037,13 +919,10 @@ void MainWindow::openLayout(QString name)
   window->setProperty("layoutName", name);
   ui->tabWidget->setTabText( ui->tabWidget->currentIndex(), name);
 
-  DEBUG << "sleeping 5000ms";
   Thread::msleep(500);
-  DEBUG << "done. arranging layout...";
 
   window->restoreGeometry(layouts->getLayoutGeometry(name));
   window->restoreState(layouts->getLayoutState(name));
-
 }
 
 //=============================================================================
