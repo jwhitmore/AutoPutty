@@ -1,3 +1,5 @@
+#include <QVariant>
+
 #include "debug.h"
 #include "docklayout.h"
 
@@ -22,6 +24,32 @@ void dockLayout::renameLayout(QString layout, QString newName)
 {
   FUNC_DEBUG;
   DEBUG << "Renaming " << layout << " to " << newName;
+
+  QVariant layGeometry;
+  QVariant layObjectName;
+  QVariant layWindowState;
+
+  QVector<SessionCfg> vSessions = getLayoutSessions(layout);
+
+  settings->beginGroup(QString("layout/%1").arg(layout));
+  layGeometry = settings->value("geometry");
+  layObjectName = settings->value("objectName");
+  layWindowState = settings->value("windowState");
+  settings->endGroup();
+
+  settings->remove(QString("layout/%1").arg(layout));
+
+  settings->setValue(QString("layout/%1/geometry").arg(newName), layGeometry);
+  settings->setValue(QString("layout/%1/objectName").arg(newName), layObjectName);
+  settings->setValue(QString("layout/%1/windowState").arg(newName), layWindowState);
+
+  for (int i = 0; i < vSessions.size(); i++ ) {
+    const SessionCfg qv = vSessions.at(i);
+
+    settings->setValue(QString("layout/%1/sessions/%2/objectName").arg(newName).arg(qv.sessionConfigId), qv.sessionObjectName);
+    settings->setValue(QString("layout/%1/sessions/%2/sessionName").arg(newName).arg(qv.sessionConfigId), qv.sessionName);
+  }
+
 }
 
 //=============================================================================
@@ -45,10 +73,18 @@ QStringList dockLayout::getLayoutSessionNames(QString layout) const
   DEBUG << "Layout: " << layout;
 
   settings->beginGroup(QString("layout/%1/sessions").arg(layout));
-  QStringList rtn = settings->childKeys();
+  QStringList id = settings->childGroups();
   settings->endGroup();
-  return rtn;
 
+  QStringList rtn;
+
+  for(int i = 0; i < id.count(); i++) {
+    rtn << settings->value(QString("layout/%1/sessions/%2/sessionName").arg(layout).arg(id.at(i))).toString();
+  }
+
+  DEBUG << "Session Count: " << rtn.size();
+
+  return rtn;
 }
 
 //=============================================================================
@@ -99,7 +135,7 @@ QString dockLayout::getLayoutObjectName(QString layout)
 
 //=============================================================================
 //=============================================================================
-QVector<SessionObjectName> dockLayout::getLayoutSessions(QString layout)
+QVector<SessionCfg> dockLayout::getLayoutSessions(QString layout)
 {
   FUNC_DEBUG;
   DEBUG << "Layout: " << layout;
@@ -108,19 +144,20 @@ QVector<SessionObjectName> dockLayout::getLayoutSessions(QString layout)
   QStringList id = settings->childGroups();
   settings->endGroup();
 
-  QVector<SessionObjectName> rtn;
+  QVector<SessionCfg> rtn;
 
   for(int i = 0; i < id.count(); i++) {
-    SessionObjectName son(
+    SessionCfg scfg(
+          settings->value(QString("layout/%1/objectName").arg(layout)).toString(),
           settings->value(QString("layout/%1/sessions/%2/sessionName").arg(layout).arg(id.at(i))).toString(),
-          settings->value(QString("layout/%1/sessions/%2/objectName").arg(layout).arg(id.at(i))).toString()
+          settings->value(QString("layout/%1/sessions/%2/objectName").arg(layout).arg(id.at(i))).toString(),
+          id.at(i).toInt()
           );
-    rtn.push_back(son);
-    DEBUG << "Added Session " << (i+1) << ": " << son.session << " -- " << son.objName;
+    rtn.push_back(scfg);
+    DEBUG << "Added Session " << id.at(i) << ": " << scfg.sessionName << " -- " << scfg.sessionObjectName;
   }
 
   DEBUG << "Session Count: " << rtn.size();
 
   return rtn;
 }
-

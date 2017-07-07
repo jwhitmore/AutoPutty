@@ -57,8 +57,8 @@ SOURCES +=  main.cpp\
             userinfo.cpp \
             about.cpp \
             crypt.cpp \
-    docklayout.cpp \
-    managelayouts.cpp
+            docklayout.cpp \
+            managelayouts.cpp
 
 HEADERS  += mainwindow.h \
             puttywidget.h \
@@ -69,13 +69,13 @@ HEADERS  += mainwindow.h \
             debug.h \
             about.h \
             crypt.h \
-    docklayout.h \
-    managelayouts.h
+            docklayout.h \
+            managelayouts.h
 
 FORMS    += mainwindow.ui \
             usersetup.ui \
             about.ui \
-    managelayouts.ui
+            managelayouts.ui
 
 RESOURCES += \
             resources.qrc

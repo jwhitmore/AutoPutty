@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1079</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -111,7 +111,6 @@
     </property>
     <addaction name="actionSave_Current_Layout"/>
     <addaction name="actionManage_Layouts"/>
-    <addaction name="actionTk"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menuFile"/>
@@ -315,7 +314,7 @@
   </action>
   <action name="actionSave_Current_Layout">
    <property name="text">
-    <string>Save Current Layout...</string>
+    <string>Save Current Layout</string>
    </property>
   </action>
   <action name="actionTk">

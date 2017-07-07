@@ -1,4 +1,6 @@
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QLineEdit>
 
 #include "debug.h"
 
@@ -52,7 +54,8 @@ void manageLayouts::refresh()
   FUNC_DEBUG;
 
   if ( this->layouts == NULL ) {
-    DEBUG << "dockLayout object is null";
+    // pointer supposed to be set by caller.
+    // something didn't happen as it should've.
     return;
   }
 
@@ -60,20 +63,38 @@ void manageLayouts::refresh()
   DEBUG << "layouts: " << this->layouts->getLayoutNames();
 
   ui->listLayouts->clear();
+  ui->listLayouts->addItems(layouts->getLayoutNames());
 
-  QStringList list = layouts->getLayoutNames();
-  QStringList::iterator itr;
-
-  for (itr = list.begin(); itr != list.end(); itr++) {
-    DEBUG << "itr [" << (*itr) << "]";
-    ui->listLayouts->addItem(*itr);
+  if ( ui->listLayouts->count() > 0 ) {
+    ui->listLayouts->setCurrentRow(0);
   }
 }
+
 //=============================================================================
 //=============================================================================
 void manageLayouts::on_btnRename_clicked()
 {
   FUNC_DEBUG;
+
+  QString originalName = ui->listLayouts->currentItem()->text();
+
+  bool ok;
+  QString newName = QInputDialog::getText(this, "Rename Layout", QString("Enter a new name for layout '%1':").arg(originalName), QLineEdit::Normal, "", &ok);
+  if (ok && !newName.isEmpty()) {
+
+    if ( this->layouts->exists(newName)) {
+      QMessageBox err;
+      err.setWindowTitle("Error");
+      err.setText(QString("A layout already exists with the name '%1'").arg(newName));
+      err.setStandardButtons(QMessageBox::Ok);
+      err.exec();
+      return;
+    }
+
+    this->layouts->renameLayout(originalName, newName);
+
+    refresh();
+  }
 }
 
 //=============================================================================

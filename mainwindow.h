@@ -85,8 +85,8 @@ private:
   int  tabCount;
   bool closeAllTabs;
   bool validForm();
-  void startPutty(QString session, bool newTab, bool standalone = false);
-  void startPutty(QString session, QString objName, bool newTab, bool standalone = false);
+  //void startPutty(QString session, bool newTab, bool standalone = false);
+  void startPutty(SessionCfg session, bool newTab, bool standalone = false);
   void loadSessions();
   void loadUsers();
   void loadLayouts();
@@ -117,12 +117,9 @@ private slots:
   void on_txtPassphrase_editingFinished();
   void on_actionOpen_Standalone_triggered();
 
-
   void on_actionSave_Current_Layout_triggered();
   void on_actionManage_Layouts_triggered();
 
-
-  void on_actionTk_triggered(); // TODO - REMOVE. this is for testing purposes.
 };
 
 #endif // MAINWINDOW_H
