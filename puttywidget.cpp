@@ -94,6 +94,20 @@ bool PuttyContainer::isEmpty()
   return map.isEmpty();
 }
 
+//=============================================================================
+//=============================================================================
+void PuttyContainer::dump()
+{
+  PuttyContainer::iterator itr;
+  for (itr = map.begin(); itr != map.end(); itr++) {
+    DEBUG << "-- " << itr.key()->property("layoutName").toString();
+    for (int i = 0; i < itr.value().size(); i++) {
+      DEBUG << "---- " << itr.value().at(i)->getSession();
+    }
+  }
+  return;
+}
+
 /*****************************************************************************
  * END OF PuttyContainer
  *****************************************************************************/
@@ -158,6 +172,7 @@ bool PuttyWidget::startPuttyProcess(QString puttyPath, QString session, QString 
       procPutty = new QProcess(this);
       connect(procPutty,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(processStateChanged(QProcess::ProcessState)));
       this->setWindowTitle(session);
+      this->sessionName = session;
 
       QStringList args;
       args << "-load" << session;
@@ -257,6 +272,27 @@ bool PuttyWidget::focus()
 {
   FUNC_DEBUG;  
   return ::BringWindowToTop(puttyHandle);
+}
+
+//=============================================================================
+//=============================================================================
+QString PuttyWidget::getSession()
+{
+  return this->sessionName;
+}
+
+//=============================================================================
+//=============================================================================
+void PuttyWidget::setSessionId(int id)
+{
+  this->sessionId = id;
+}
+
+//=============================================================================
+//=============================================================================
+int PuttyWidget::getSessionId()
+{
+  return this->sessionId;
 }
 
 //-----------------------------------------------------------------------------

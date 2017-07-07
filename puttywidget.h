@@ -65,6 +65,10 @@ public:
                          QString password, QString protocol, QString port);
   void setTitle(QString title);
   void setPause(unsigned long msec);
+  void setLayout(QString layout);
+  QString getSession();
+  void setSessionId(int id);
+  int getSessionId();
   QString getTitle();
   bool isRunning();
   bool kill();
@@ -88,6 +92,9 @@ private:
   bool addProcToWidget();
   HWND findPuttyWindow(QProcess* process);
   void forceResize();
+  int sessionId;        // unique number for identifying within a layout (just used to keep configuration unique)
+  QString sessionName;
+  QString layoutName;
 
 private slots:
   void processStateChanged(QProcess::ProcessState state);
@@ -119,6 +126,8 @@ public:
   bool isEmpty();
   PuttyContainer::iterator find(PuttyWidget* widget);
   PuttyContainer::iterator find(QMainWindow* window);
+
+  void dump();
 
 private:
   PUTTY_MAP map;

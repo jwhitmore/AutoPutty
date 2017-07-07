@@ -41,6 +41,7 @@
 #include "puttywidget.h"
 #include "actionwrapper.h"
 #include "userinfo.h"
+#include "docklayout.h"
 
 struct PUTTY_SETTINGS_T {
   QString protocol;
@@ -78,14 +79,18 @@ private:
   UserInfo* userinfo;
   PUTTY_SETTINGS_MAP puttySettingsMap;
   PuttyContainer container;
+  dockLayout* layouts;
   QString puttyPath;
   QString passphrase;
   int  tabCount;
   bool closeAllTabs;
   bool validForm();
-  void startPutty(QString session, bool newTab, bool standalone = false);
+  //void startPutty(QString session, bool newTab, bool standalone = false);
+  void startPutty(SessionCfg session, bool newTab, bool standalone = false);
   void loadSessions();
   void loadUsers();
+  void loadLayouts();
+  void openLayout(QString name);
 
 private slots:
   void on_btnLogin_clicked();
@@ -111,6 +116,10 @@ private slots:
   void on_actionAbout_triggered();
   void on_txtPassphrase_editingFinished();
   void on_actionOpen_Standalone_triggered();
+
+  void on_actionSave_Current_Layout_triggered();
+  void on_actionManage_Layouts_triggered();
+
 };
 
 #endif // MAINWINDOW_H

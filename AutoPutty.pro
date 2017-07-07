@@ -24,21 +24,21 @@ MINOR = 0
 PATCH = 7
 VERSION_HEADER = version.h
 
-exists(.git) {
-  versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
-  versiontarget.depends = FORCE
-
-  PRE_TARGETDEPS += $$VERSION_HEADER
-  QMAKE_EXTRA_TARGETS += versiontarget
-} else {
-  versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
-  versiontarget.depends = FORCE
-
-  PRE_TARGETDEPS += $$VERSION_HEADER
-  QMAKE_EXTRA_TARGETS += versiontarget
-}
+#exists(.git) {
+#  versiontarget.target = $$VERSION_HEADER
+#  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+#  versiontarget.depends = FORCE
+#
+#  PRE_TARGETDEPS += $$VERSION_HEADER
+#  QMAKE_EXTRA_TARGETS += versiontarget
+#} else {
+#  versiontarget.target = $$VERSION_HEADER
+#  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
+#  versiontarget.depends = FORCE
+#
+#  PRE_TARGETDEPS += $$VERSION_HEADER
+#  QMAKE_EXTRA_TARGETS += versiontarget
+#}
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -56,7 +56,9 @@ SOURCES +=  main.cpp\
             usersetup.cpp \
             userinfo.cpp \
             about.cpp \
-            crypt.cpp
+            crypt.cpp \
+            docklayout.cpp \
+            managelayouts.cpp
 
 HEADERS  += mainwindow.h \
             puttywidget.h \
@@ -66,11 +68,14 @@ HEADERS  += mainwindow.h \
             userinfo.h \
             debug.h \
             about.h \
-            crypt.h
+            crypt.h \
+            docklayout.h \
+            managelayouts.h
 
 FORMS    += mainwindow.ui \
             usersetup.ui \
-            about.ui
+            about.ui \
+            managelayouts.ui
 
 RESOURCES += \
             resources.qrc
