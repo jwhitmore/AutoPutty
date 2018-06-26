@@ -27,7 +27,7 @@ BEGIN
             VALUE   "FileDescription",  "Auto-logon/Tabbed PuTTy\0"
             VALUE   "FileVersion",      VER_FILEVERSION_STR
             VALUE   "InternalName",     "AutoPutty\0"
-            VALUE   "LegalCopyright",   "Copyright 2012-2013 by Justin Whitmore.\0"
+            VALUE   "LegalCopyright",   "Copyright 2012-2018 by Justin Whitmore.\0"
             VALUE   "OriginalFilename", "AutoPutty.exe\0"
             VALUE   "ProductName",      VER_PRODUCTNAME_STR
             VALUE   "ProductVersion",   VER_PRODUCTVERSION_STR

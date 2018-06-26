@@ -23,19 +23,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QSettings>
-#include <QStatusBar>
-#include <QMessageBox>
-#include <QListWidgetItem>
-#include <QInputDialog>
-#include <QMenu>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QListWidgetItem>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMenu>
 #include <QList>
 #include <QFile>
 #include <QMap>
 #include <QDir>
 #include <QCloseEvent>
-#include <QShortcut>
+#include <QtWidgets/QShortcut>
 
 #include "inihelper.h"
 #include "puttywidget.h"

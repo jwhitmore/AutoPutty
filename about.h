@@ -1,7 +1,7 @@
 /*
  * about.h:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2014 Justin Whitmore
+ * Copyright (c) 2012-2018 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *
@@ -23,7 +23,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 namespace Ui {
 class About;

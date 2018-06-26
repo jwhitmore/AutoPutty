@@ -23,7 +23,7 @@
 #ifndef USERSETUP_H
 #define USERSETUP_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include "userinfo.h"
 #include "inihelper.h"

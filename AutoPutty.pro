@@ -1,7 +1,7 @@
 #/*
 # * AutoPutty.pro:
 # * AutoPutty: Auto-logon/Tabbed PuTTy
-# * Copyright (c) 2012-2014 Justin Whitmore
+# * Copyright (c) 2012-2018 Justin Whitmore
 # ***********************************************************************
 # * This file is part of AutoPutty:
 # *
@@ -23,22 +23,21 @@ MAJOR = 5
 MINOR = 0
 PATCH = 7
 VERSION_HEADER = version.h
+exists(.git) {
+  versiontarget.target = $$VERSION_HEADER
+  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+  versiontarget.depends = FORCE
 
-#exists(.git) {
-#  versiontarget.target = $$VERSION_HEADER
-#  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
-#  versiontarget.depends = FORCE
-#
-#  PRE_TARGETDEPS += $$VERSION_HEADER
-#  QMAKE_EXTRA_TARGETS += versiontarget
-#} else {
-#  versiontarget.target = $$VERSION_HEADER
-#  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
-#  versiontarget.depends = FORCE
-#
-#  PRE_TARGETDEPS += $$VERSION_HEADER
-#  QMAKE_EXTRA_TARGETS += versiontarget
-#}
+  PRE_TARGETDEPS += $$VERSION_HEADER
+  QMAKE_EXTRA_TARGETS += versiontarget
+} else {
+  versiontarget.target = $$VERSION_HEADER
+  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
+  versiontarget.depends = FORCE
+
+  PRE_TARGETDEPS += $$VERSION_HEADER
+  QMAKE_EXTRA_TARGETS += versiontarget
+}
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

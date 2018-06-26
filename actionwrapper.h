@@ -1,7 +1,7 @@
 /*
  * actionwrapper.h:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2014 Justin Whitmore
+ * Copyright (c) 2012-2018 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *
@@ -24,7 +24,7 @@
 #define ACTIONWRAPPER_H
 
 #include <QObject>
-#include <QAction>
+#include <QtWidgets/QAction>
 #include <QMap>
 
 class ActionWrapper : public QObject

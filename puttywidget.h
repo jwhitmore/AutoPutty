@@ -23,16 +23,16 @@
 #ifndef PUTTYWIDGET_H
 #define PUTTYWIDGET_H
 
-#include <QDockWidget>
+#include <QtWidgets/QDockWidget>
 #include <QProcess>
 #include <QThread>
 #include <QDebug>
 #include <QResizeEvent>
 #include <QKeyEvent>
-#include <QMenu>
-#include <QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMainWindow>
 #include <QMap>
-#include <QAbstractButton>
+#include <QtWidgets/QAbstractButton>
 
 #include <stdexcept>
 

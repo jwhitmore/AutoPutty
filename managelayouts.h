@@ -1,7 +1,7 @@
 #ifndef MANAGELAYOUTS_H
 #define MANAGELAYOUTS_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 #include <docklayout.h>
 

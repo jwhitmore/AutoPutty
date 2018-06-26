@@ -1,7 +1,7 @@
 #ifndef DOCKLAYOUT_H
 #define DOCKLAYOUT_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
