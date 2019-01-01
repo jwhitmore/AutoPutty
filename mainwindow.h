@@ -60,7 +60,7 @@ class MainWindow : public QMainWindow
   
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
+  explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
 protected:
@@ -120,6 +120,7 @@ private slots:
   void on_actionSave_Current_Layout_triggered();
   void on_actionManage_Layouts_triggered();
 
+  void on_actionOpen_INI_triggered();
 };
 
 #endif // MAINWINDOW_H

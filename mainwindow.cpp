@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
   layouts = new dockLayout(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 
   ui->tabWidget->setMovable(true);
-  if ( registrySettings != NULL) {
+  if ( registrySettings != nullptr) {
     QStringList list = registrySettings->childGroups();
     QStringList::iterator itr;
     for (itr = list.begin(); itr != list.end(); ++itr) {
@@ -141,8 +141,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
   }
 
   iniHelper->writeValue("Application","geometry",this->saveGeometry());
-  iniHelper->writeValue("Application","defaultTabAction",(int)ui->actionCurrent_Tab->isChecked());
-  iniHelper->writeValue("Application","copyPassToClipboard",(int)ui->actionCopy_Password_to_Clipboard->isChecked());
+  iniHelper->writeValue("Application","defaultTabAction",static_cast<int>(ui->actionCurrent_Tab->isChecked()));
+  iniHelper->writeValue("Application","copyPassToClipboard",static_cast<int>(ui->actionCopy_Password_to_Clipboard->isChecked()));
   if ( iniHelper->readValue("Application","PauseInMsecs").isEmpty() ) {
     iniHelper->writeValue("Application","PauseInMsecs",300);
   }
@@ -224,26 +224,26 @@ void MainWindow::startPutty(SessionCfg session, bool newTab, bool standalone)
     }
 
     PuttyContainer::iterator itr;
-    QMainWindow* window = NULL;
-    PuttyWidget* lastPutty = NULL;
+    QMainWindow* window = nullptr;
+    PuttyWidget* lastPutty = nullptr;
     if (!newTab) {
-      itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+      itr = container.find(static_cast<QMainWindow*>(ui->tabWidget->currentWidget()));
       if (itr != container.end()) {
         window = itr.key();        
         if (!itr.value().isEmpty()) {
           lastPutty = itr.value().last();
         }
       }
-      if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
-        window = (QMainWindow*)ui->tabWidget->currentWidget();
+      if (ui->tabWidget->currentWidget() != nullptr && window == nullptr) {
+        window = static_cast<QMainWindow*>(ui->tabWidget->currentWidget());
       }
     }
 
-    if ( window == NULL ) {
+    if ( window == nullptr ) {
       window = new QMainWindow(ui->tabWidget);
       window->setAttribute(Qt::WA_DeleteOnClose,true);
       window->setWindowFlags(Qt::Widget);
-      window->setCentralWidget(NULL);
+      window->setCentralWidget(nullptr);
       window->setDockNestingEnabled(true);
       window->setObjectName(session.layoutObjectName);
       window->setProperty("layoutName", QString("UnsavedLayout%1").arg(layoutID++));
@@ -257,7 +257,7 @@ void MainWindow::startPutty(SessionCfg session, bool newTab, bool standalone)
 
     putty->setPause(iniHelper->readValue("Application","PauseInMsecs").toULong());
     window->addDockWidget(Qt::LeftDockWidgetArea,putty);
-    if (lastPutty != NULL) {
+    if (lastPutty != nullptr) {
       window->tabifyDockWidget(lastPutty,putty);
     }
 
@@ -302,7 +302,7 @@ void MainWindow::loadSessions()
   listBoxContextMenu->clear();
   puttySettingsMap.clear();
 
-  if ( registrySettings != NULL) {
+  if ( registrySettings != nullptr) {
     QStringList list = registrySettings->childGroups();
     QStringList::iterator itr;
     for (itr = list.begin(); itr != list.end(); itr++) {
@@ -360,7 +360,7 @@ void MainWindow::loadSessions()
 void MainWindow::loadUsers()
 {
   FUNC_DEBUG;
-  if (userinfo != NULL) {
+  if (userinfo != nullptr) {
     userinfo->clear();
     QStringList sessions;
     for (int i = 0; i < ui->lwSessions->count(); i++) {
@@ -422,7 +422,7 @@ void MainWindow::on_lwSessions_itemDoubleClicked(QListWidgetItem *item)
 //=============================================================================
 void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
 {
-  if (contextMenu != NULL) {
+  if (contextMenu != nullptr) {
     QPoint globalPos = this->mapToGlobal(pos);
     contextMenu->exec(globalPos);
   }
@@ -433,7 +433,7 @@ void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
 //=============================================================================
 void MainWindow::on_tabWidget_customContextMenuRequested(const QPoint &pos)
 {
-  if (contextMenu != NULL) {
+  if (contextMenu != nullptr) {
     QPoint globalPos = ui->tabWidget->mapToGlobal(pos);
     contextMenu->exec(globalPos);
   }
@@ -444,7 +444,7 @@ void MainWindow::on_tabWidget_customContextMenuRequested(const QPoint &pos)
 //=============================================================================
 void MainWindow::on_lwSessions_customContextMenuRequested(const QPoint &pos)
 {
-  if (listBoxContextMenu != NULL) {
+  if (listBoxContextMenu != nullptr) {
     QPoint globalPos = ui->lwSessions->mapToGlobal(pos);
     listBoxContextMenu->exec(globalPos);
   }
@@ -458,7 +458,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
   FUNC_DEBUG;
   
-  QMainWindow* window = (QMainWindow*)ui->tabWidget->widget(index);
+  QMainWindow* window = static_cast<QMainWindow*>(ui->tabWidget->widget(index));
   DEBUG << "index " << index;
   PuttyContainer::iterator itr = container.find(window);
   if (itr != container.end()) {
@@ -475,7 +475,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
       container.remove(window);
     }
   }
-  if ( window == (QMainWindow*)ui->tabWidget->widget(index) ) {
+  if ( window == static_cast<QMainWindow*>(ui->tabWidget->widget(index)) ) {
     window->close();
     ui->tabWidget->removeTab(index);
   }
@@ -489,7 +489,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
   FUNC_DEBUG;
   
-  PuttyContainer::iterator itr = container.find((QMainWindow*)ui->tabWidget->widget(index));
+  PuttyContainer::iterator itr = container.find(static_cast<QMainWindow*>(ui->tabWidget->widget(index)));
   if (itr != container.end()) {
     if (!itr.value().isEmpty()) {
       itr.value().first()->focus();
@@ -539,11 +539,11 @@ void MainWindow::on_actionClose_All_Tabs_triggered()
 void MainWindow::on_actionNew_Tab_triggered()
 {
   FUNC_DEBUG;
-  QMainWindow* window = NULL;
+  QMainWindow* window = nullptr;
   window = new QMainWindow(ui->tabWidget);
   window->setAttribute(Qt::WA_DeleteOnClose,true);
   window->setWindowFlags(Qt::Widget);
-  window->setCentralWidget(NULL);
+  window->setCentralWidget(nullptr);
   window->setDockNestingEnabled(true);
 
   int idx = ui->tabWidget->addTab(window,QString("Tab %1").arg(tabCount++));
@@ -686,7 +686,7 @@ void MainWindow::on_txtPassphrase_editingFinished()
   if (!ui->txtPassphrase->text().isEmpty()) {
     loadUsers();
   } else {
-    if (userinfo != NULL) {
+    if (userinfo != nullptr) {
       userinfo->clear();
     }
   }
@@ -786,14 +786,14 @@ void MainWindow::on_actionSave_Current_Layout_triggered()
   }
 
   PuttyContainer::iterator itr;
-  QMainWindow* window = NULL;
+  QMainWindow* window = nullptr;
 
-  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  itr = container.find(static_cast<QMainWindow*>(ui->tabWidget->currentWidget()));
   if (itr != container.end()) {
     window = itr.key();
   }
-  if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
-    window = (QMainWindow*)ui->tabWidget->currentWidget();
+  if (ui->tabWidget->currentWidget() != nullptr && window == nullptr) {
+    window = static_cast<QMainWindow*>(ui->tabWidget->currentWidget());
   }
 
   QString layoutName;
@@ -823,7 +823,7 @@ void MainWindow::on_actionSave_Current_Layout_triggered()
   settings.setValue(QString("layout/%1/windowState").arg(layoutName), window->saveState());
   settings.setValue(QString("layout/%1/objectName").arg(layoutName), window->objectName());
 
-  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  itr = container.find(static_cast<QMainWindow*>(ui->tabWidget->currentWidget()));
   if (itr != container.end()) {
     DEBUG << "-- " << itr.key()->property("layoutName").toString();
 
@@ -855,7 +855,7 @@ void MainWindow::loadLayouts()
 {
   FUNC_DEBUG;
 
-  if ( layouts != NULL) {
+  if ( layouts != nullptr) {
 
     QStringList list = layouts->getLayoutNames();
     QStringList::iterator itr;
@@ -906,13 +906,14 @@ void MainWindow::openLayout(QString name)
   }
 
   PuttyContainer::iterator itr;
-  QMainWindow* window = NULL;
-  itr = container.find((QMainWindow*)ui->tabWidget->currentWidget());
+  QMainWindow* window = nullptr;
+  itr = container.find(static_cast<QMainWindow*>(ui->tabWidget->currentWidget()));
   if (itr != container.end()) {
     window = itr.key();
   }
-  if (ui->tabWidget->currentWidget() != NULL && window == NULL) {
-    window = (QMainWindow*)ui->tabWidget->currentWidget();
+  if (ui->tabWidget->currentWidget() != nullptr && window == nullptr) {
+    window = static_cast<QMainWindow*>(ui->tabWidget->currentWidget());
+    //window = (QMainWindow*)ui->tabWidget->currentWidget();
   }
 
   window->setObjectName(objName);
@@ -931,7 +932,7 @@ void MainWindow::on_actionManage_Layouts_triggered()
 {
   FUNC_DEBUG;
 
-  if ( layouts != NULL) {
+  if ( layouts != nullptr) {
     manageLayouts* manager = new manageLayouts(this);
     manager->setLayouts(layouts);
     manager->exec();
@@ -942,5 +943,12 @@ void MainWindow::on_actionManage_Layouts_triggered()
   } else {
     DEBUG << "dockLayout layouts is NULL";
   }
+
+}
+
+//=============================================================================
+//=============================================================================
+void MainWindow::on_actionOpen_INI_triggered()
+{
 
 }

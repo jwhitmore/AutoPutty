@@ -19,7 +19,7 @@ namespace Version
 	static const int MAJOR = $MAJOR$;
 	static const int MINOR = $MINOR$;
 	static const int PATCH = $PATCH$;
-	static const char* REVISION = "$REV$";
+        static const std::string REVISION = "$REV$";
 	static const int BUILD = $BUILD$;
 }
 

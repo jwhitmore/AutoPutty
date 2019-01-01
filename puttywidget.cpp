@@ -118,15 +118,15 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
   QDockWidget(parent)
 {
   FUNC_DEBUG;
-  procPutty = NULL;
+  procPutty = nullptr;
   attached = false;
   msecs = 300;
   this->setAttribute(Qt::WA_DeleteOnClose,true);
-  this->setWidget(NULL);
+  this->setWidget(nullptr);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setFocusPolicy(Qt::ClickFocus);
   this->resize(parent->size());
-  if (this->internalWinId() == NULL) {
+  if (!this->internalWinId()) {
     this->winId();
   }
   this->installEventFilter(this);
@@ -149,7 +149,7 @@ PuttyWidget::PuttyWidget(QWidget *parent) :
 PuttyWidget::~PuttyWidget()
 {
   FUNC_DEBUG;
-  if (procPutty != NULL) {
+  if (procPutty != nullptr) {
     if (isRunning()) {
       kill();
     }
@@ -253,7 +253,7 @@ bool PuttyWidget::kill()
   FUNC_DEBUG;
   try
   {
-    if (procPutty != NULL) {
+    if (procPutty != nullptr) {
       procPutty->kill();
       return procPutty->waitForFinished(3000);
     } else {
@@ -305,8 +305,8 @@ bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
 {
   if (event->type() == QEvent::WinIdChange) {
     DEBUG << "winid change" << this->internalWinId();
-    if (this->internalWinId() != NULL) {
-      puttyParent = ::SetParent(puttyHandle, (HWND)this->internalWinId());
+    if (this->internalWinId()) {
+      puttyParent = ::SetParent(puttyHandle, reinterpret_cast<HWND>(this->internalWinId()));
     }
   }
   return false;
@@ -334,13 +334,13 @@ void PuttyWidget::keyPressEvent(QKeyEvent* event)
 
   this->focus();
   // Simulate a key press
-  keybd_event( event->key(),
+  keybd_event( static_cast<byte>(event->key()),
                0x45,
                KEYEVENTF_EXTENDEDKEY | 0,
                0 );
 
   // Simulate a key release
-  keybd_event( event->key(),
+  keybd_event( static_cast<byte>(event->key()),
                0x45,
                KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
                0);
@@ -360,19 +360,19 @@ bool PuttyWidget::addProcToWidget()
   try
   {
     int retries = 0;
-    while( (puttyHandle = findPuttyWindow(procPutty) ) == NULL)
+    while( (puttyHandle = findPuttyWindow(procPutty) ) == nullptr)
     {
       if (puttyHandle) { break; }
       retries++;
       if (retries > 15) {
         return false;
       }
-      puttyHandle = NULL;
+      puttyHandle = nullptr;
       Thread::msleep(300);
     }
-    if ( puttyHandle != NULL ) {
-      puttyParent = ::SetParent(puttyHandle,(HWND)this->winId());
-      if (puttyParent == NULL) {
+    if ( puttyHandle != nullptr ) {
+      puttyParent = ::SetParent(puttyHandle,reinterpret_cast<HWND>(this->winId()));
+      if (puttyParent == nullptr) {
         return false;
       }
       int loop = 0;
@@ -409,14 +409,14 @@ HWND PuttyWidget::findPuttyWindow(QProcess* process)
   {
     if( !process )
     {
-      return 0;
+      return nullptr;
     }
     if( !process->pid() )
     {
-      return 0;
+      return nullptr;
     }
 
-    HWND h = ::GetTopWindow(0);
+    HWND h = ::GetTopWindow(nullptr);
     while ( h )
     {
       DWORD pid;
@@ -425,12 +425,12 @@ HWND PuttyWidget::findPuttyWindow(QProcess* process)
       if ( pid == process->pid()->dwProcessId )
       {
         char buffer[255];
-        ::GetWindowTextA(h,(char*)&buffer,255);
+        ::GetWindowTextA(h,reinterpret_cast<char*>(&buffer),255);
         HWND parent = ::GetParent(h);
         WINDOWINFO info;
         ::GetWindowInfo(h,&info);
 
-        if( parent == 0 )
+        if( parent == nullptr )
         {
           found = true;
           break;
@@ -442,11 +442,11 @@ HWND PuttyWidget::findPuttyWindow(QProcess* process)
     if( found )
       return h;
     else
-      return NULL;
+      return nullptr;
 
   } catch (std::exception &e) {
     DEBUG << "exception " << e.what();
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -493,7 +493,7 @@ void PuttyWidget::changeTitle_triggered()
 void PuttyWidget::customContextMenuRequested(const QPoint &pos)
 {
   FUNC_DEBUG;
-  if (menuContext != NULL) {
+  if (menuContext != nullptr) {
     QPoint globalPos = this->mapToGlobal(pos);
     menuContext->exec(globalPos);
   }

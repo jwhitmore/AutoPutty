@@ -73,7 +73,6 @@ HEADERS  += mainwindow.h \
             crypt.h \
             docklayout.h \
             managelayouts.h \
-            version.h
 
 FORMS    += mainwindow.ui \
             usersetup.ui \

@@ -1,3 +1,4 @@
+
 /*
  * inihelper.cpp:
  * AutoPutty: Auto-logon/Tabbed PuTTy
@@ -29,7 +30,7 @@
 INIHelper::INIHelper()
 {
   FUNC_DEBUG;
-  iniSettings = NULL;
+  iniSettings = nullptr;
 }
 
 //=============================================================================
@@ -37,7 +38,7 @@ INIHelper::INIHelper()
 INIHelper::INIHelper(QString iniFile)
 {
   FUNC_DEBUG;
-  iniSettings = NULL;
+  iniSettings = nullptr;
   initialize(iniFile);
 }
 
@@ -46,7 +47,7 @@ INIHelper::INIHelper(QString iniFile)
 INIHelper::~INIHelper()
 {
   FUNC_DEBUG;
-  if (iniSettings == NULL) {
+  if (iniSettings == nullptr) {
     delete iniSettings;
   }
 }
@@ -65,7 +66,7 @@ void INIHelper::initialize(QString iniFile)
       file.open(QIODevice::WriteOnly);
       file.close();
     }
-    if (iniSettings == NULL) {
+    if (iniSettings == nullptr) {
       iniSettings = new QSettings(iniFile,QSettings::IniFormat);
     }
   } catch (std::exception &e)
@@ -82,7 +83,7 @@ QString INIHelper::readValue(QString section, QString key)
   FUNC_DEBUG;
   try
   {
-    if (iniSettings != NULL) {
+    if (iniSettings != nullptr) {
       iniSettings->sync();
       iniSettings->beginGroup(section);
       QVariant value = QVariant(iniSettings->value(key));
@@ -103,7 +104,7 @@ QByteArray INIHelper::readByteArray(QString section, QString key)
   FUNC_DEBUG;
   try
   {
-    if (iniSettings != NULL) {
+    if (iniSettings != nullptr) {
       iniSettings->sync();
       iniSettings->beginGroup(section);
       QVariant value = QVariant(iniSettings->value(key));
@@ -123,7 +124,7 @@ bool INIHelper::writeValue(QString section, QString key, QVariant value)
 {
   FUNC_DEBUG;
   try {
-    if (iniSettings != NULL) {
+    if (iniSettings != nullptr) {
       iniSettings->beginGroup(section);
       iniSettings->setValue(key,value);
       iniSettings->endGroup();

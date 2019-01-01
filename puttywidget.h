@@ -59,7 +59,7 @@ class PuttyWidget : public QDockWidget
 {
   Q_OBJECT
 public:
-  explicit PuttyWidget(QWidget *parent = 0);
+  explicit PuttyWidget(QWidget *parent = nullptr);
   ~PuttyWidget();
   bool startPuttyProcess(QString puttyPath, QString session, QString username,
                          QString password, QString protocol, QString port);

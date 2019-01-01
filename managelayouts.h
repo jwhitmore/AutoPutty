@@ -36,7 +36,7 @@ class manageLayouts : public QDialog
   Q_OBJECT
 
 public:
-  explicit manageLayouts(QWidget *parent = 0);
+  explicit manageLayouts(QWidget *parent = nullptr);
   ~manageLayouts();
 
   void setLayouts(dockLayout* dl);

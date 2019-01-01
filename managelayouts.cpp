@@ -75,7 +75,7 @@ void manageLayouts::refresh()
 {
   FUNC_DEBUG;
 
-  if ( this->layouts == NULL ) {
+  if ( this->layouts == nullptr ) {
     // pointer supposed to be set by caller.
     // something didn't happen as it should've.
     return;

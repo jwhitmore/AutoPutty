@@ -35,7 +35,7 @@ About::About(QWidget *parent) :
 {
   ui->setupUi(this);
   ui->lblAutoPutty->setText(QString("AutoPutty %1.%2.%3").arg(Version::MAJOR).arg(Version::MINOR).arg(Version::PATCH));
-  ui->lblRevision->setText(QString("Revision: %1").arg(Version::REVISION));
+  ui->lblRevision->setText(QString("Revision: %1").arg(Version::REVISION.c_str()));
   ui->lblBuild->setText(QString("Build: %1").arg(Version::BUILD));
   ui->lblEmail->setText("<a href='mailto:support@justinwhitmore.com'>Support Email</a>");
   ui->lblEmail->setOpenExternalLinks(true);

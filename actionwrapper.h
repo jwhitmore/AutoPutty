@@ -31,7 +31,7 @@ class ActionWrapper : public QObject
 {
   Q_OBJECT
 public:
-  explicit ActionWrapper(QObject *parent = 0);
+  explicit ActionWrapper(QObject *parent = nullptr);
   ~ActionWrapper();  
   QAction* getAction();
   QString getText();

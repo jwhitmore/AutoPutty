@@ -41,7 +41,7 @@ ActionWrapper::ActionWrapper(QObject *parent) :
 ActionWrapper::~ActionWrapper()
 {
   FUNC_DEBUG;
-  if (action == NULL) {
+  if (action == nullptr) {
     delete action;
   }
 }
@@ -59,7 +59,7 @@ QAction* ActionWrapper::getAction()
 QString ActionWrapper::getText()
 {
   FUNC_DEBUG;
-  if (action != NULL) {
+  if (action != nullptr) {
     return action->text();
   } else {
     return QString();
@@ -71,7 +71,7 @@ QString ActionWrapper::getText()
 void ActionWrapper::setText(QString text)
 {
   FUNC_DEBUG;
-  if (action != NULL) {
+  if (action != nullptr) {
     action->setText(text);
   }
 }

@@ -59,6 +59,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionOpen_INI"/>
+    <addaction name="separator"/>
     <addaction name="actionNew_Tab"/>
     <addaction name="actionClose_All_Tabs"/>
     <addaction name="separator"/>
@@ -325,6 +327,11 @@
   <action name="actionManage_Layouts">
    <property name="text">
     <string>Manage Layouts</string>
+   </property>
+  </action>
+  <action name="actionOpen_INI">
+   <property name="text">
+    <string>Open INI</string>
    </property>
   </action>
  </widget>

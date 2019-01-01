@@ -38,7 +38,7 @@ class UserSetup : public QDialog
   Q_OBJECT
 
 public:
-  explicit UserSetup(QWidget *parent = 0);
+  explicit UserSetup(QWidget *parent = nullptr);
   ~UserSetup();
   void setPassphrase(QString passphrase);
 
