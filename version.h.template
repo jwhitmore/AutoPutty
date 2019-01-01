@@ -1,0 +1,26 @@
+/*
+ * version.h:
+ * $HEADER1$
+ * $HEADER2$
+*/
+
+#ifndef VERSION_H
+#define VERSION_H
+
+namespace Version
+{
+	#define APP_VERSION            "$MAJOR$.$MINOR$.$PATCH$.$BUILD$"
+	#define VER_FILEVERSION        $MAJOR$,$MINOR$,$PATCH$,$BUILD$
+	#define VER_FILEVERSION_STR    "$MAJOR$.$MINOR$.$PATCH$.$BUILD$\0"
+	#define VER_PRODUCTVERSION     $MAJOR$,$MINOR$,$PATCH$,$BUILD$
+	#define VER_PRODUCTVERSION_STR "$MAJOR$.$MINOR$\0"
+
+
+	static const int MAJOR = $MAJOR$;
+	static const int MINOR = $MINOR$;
+	static const int PATCH = $PATCH$;
+	static const char* REVISION = "$REV$";
+	static const int BUILD = $BUILD$;
+}
+
+#endif // VERSION_H

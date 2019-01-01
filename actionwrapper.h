@@ -1,7 +1,7 @@
 /*
  * actionwrapper.h:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2018 Justin Whitmore
+ * Copyright (c) 2012-2019 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *

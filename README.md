@@ -25,10 +25,6 @@ Requirements
 - Windows XP or later
 - AutoPutty
 
-AutoPutty is statically linked currently to Qt's libs, packaged with putty executable, and statically linked to Visual C's libs.  The only thing you need to run a released version of AutoPutty is AutoPutty.
-
-That being said AutoPutty will build from Qt's dynamic libraries, it will just need packaged with Qt's libs or installed on any machine running AutoPutty.  AutoPutty should theoretically build with gcc or VC Express also, although it is not currently tested with most recent releases.
-
 Build Prerequisites
 ---------
 - QT 4.8+ (Static or Dynamic)
@@ -60,6 +56,7 @@ Build From Qt Creator
 Authors and Contributors
 ---------
 Justin Whitmore (@jwhitmore) Original Author.
+Travis Kramper (@tk007) Contributor.
 
 
 

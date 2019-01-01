@@ -1,7 +1,7 @@
 /*
  * about.cpp:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2014 Justin Whitmore
+ * Copyright (c) 2012-2019 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *
@@ -70,16 +70,7 @@ void About::on_btnSupport_clicked()
 {
   QString url = "";
 
-  QString business = "justin@justinwhitmore.com";
-  QString description = "Donation";
-  QString country = "US";
-  QString currency = "USD";
-
-  url = QString("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=%1&lc=%2&item_name=%3&currency_code=%4&bn=PP%2dDonationsBF")
-      .arg(business)
-      .arg(country)
-      .arg(description)
-      .arg(currency);
+  url = QString("https://paypal.me/jjwhitmore");
 
   QDesktopServices::openUrl(QUrl(url));
 }

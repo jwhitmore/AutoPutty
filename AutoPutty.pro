@@ -1,7 +1,7 @@
 #/*
 # * AutoPutty.pro:
 # * AutoPutty: Auto-logon/Tabbed PuTTy
-# * Copyright (c) 2012-2018 Justin Whitmore
+# * Copyright (c) 2012-2019 Justin Whitmore
 # ***********************************************************************
 # * This file is part of AutoPutty:
 # *
@@ -23,16 +23,19 @@ MAJOR = 5
 MINOR = 0
 PATCH = 7
 VERSION_HEADER = version.h
+VERSION_HEADER_TEMPLATE = version.h.template
+
+# version.exe source code located here: https://gitlab.com/jwhitmore/version
 exists(.git) {
   versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER GIT
+  versiontarget.commands = cd $$PWD && $$PWD/version.exe -i $$VERSION_HEADER_TEMPLATE -o $$VERSION_HEADER -vcs git -major $$MAJOR -minor $$MINOR -patch $$PATCH
   versiontarget.depends = FORCE
 
   PRE_TARGETDEPS += $$VERSION_HEADER
   QMAKE_EXTRA_TARGETS += versiontarget
 } else {
   versiontarget.target = $$VERSION_HEADER
-  versiontarget.commands = $$PWD\\version.exe $$MAJOR $$MINOR $$PATCH $$VERSION_HEADER
+  versiontarget.commands = cd $$PWD && $$PWD/version.exe -i $$VERSION_HEADER_TEMPLATE -o $$VERSION_HEADER -vcs svn -major $$MAJOR -minor $$MINOR -patch $$PATCH
   versiontarget.depends = FORCE
 
   PRE_TARGETDEPS += $$VERSION_HEADER
@@ -69,7 +72,8 @@ HEADERS  += mainwindow.h \
             about.h \
             crypt.h \
             docklayout.h \
-            managelayouts.h
+            managelayouts.h \
+            version.h
 
 FORMS    += mainwindow.ui \
             usersetup.ui \
@@ -84,6 +88,6 @@ OTHER_FILES += \
 
 RC_FILE = resource.rc
 
-CONFIG += static release
+#CONFIG += release
 
 

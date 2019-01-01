@@ -1,7 +1,7 @@
 /*
  * crypt.cpp:
  * AutoPutty: Auto-logon/Tabbed PuTTy
- * Copyright (c) 2012-2014 Justin Whitmore
+ * Copyright (c) 2012-2019 Justin Whitmore
  ***********************************************************************
  * This file is part of AutoPutty:
  *
@@ -62,7 +62,9 @@ void Crypt::genKey(QString passphrase)
   }
   _key.resize(8);
   for (int i = 0; i < _key.size(); i++) {
-    int byte = (_ikey >> i) ^ (int)passphrase.at(i % (passphrase.size() - 1)).toLatin1();
+    int idx = i % ((passphrase.size() - 1) == 0 ? 1 : (passphrase.size() - 1));
+    if (idx > passphrase.size() - 1) { idx = (passphrase.size() - 1); }
+    int byte = (_ikey >> i) ^ (int)passphrase.at(idx).toLatin1();
     byte = byte & 0xFF;
     _key[i] = static_cast<char>(byte);
   }
