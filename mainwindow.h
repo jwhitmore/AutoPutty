@@ -43,6 +43,9 @@
 #include "userinfo.h"
 #include "docklayout.h"
 
+extern int layoutID;
+extern int puttyID;
+
 struct PUTTY_SETTINGS_T {
   QString protocol;
   QString port;

@@ -58,13 +58,13 @@ void Crypt::genKey(QString passphrase)
   FUNC_DEBUG;
   _ikey = passphrase.size();
   for (int i = 0; i < passphrase.size(); i++) {
-    _ikey += (int)passphrase.at(i).toLatin1();
+    _ikey += static_cast<int>(passphrase.at(i).toLatin1());
   }
   _key.resize(8);
   for (int i = 0; i < _key.size(); i++) {
     int idx = i % ((passphrase.size() - 1) == 0 ? 1 : (passphrase.size() - 1));
     if (idx > passphrase.size() - 1) { idx = (passphrase.size() - 1); }
-    int byte = (_ikey >> i) ^ (int)passphrase.at(idx).toLatin1();
+    int byte = (_ikey >> i) ^ static_cast<int>(passphrase.at(idx).toLatin1());
     byte = byte & 0xFF;
     _key[i] = static_cast<char>(byte);
   }

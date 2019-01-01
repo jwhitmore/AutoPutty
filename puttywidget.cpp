@@ -303,10 +303,11 @@ int PuttyWidget::getSessionId()
 //=============================================================================
 bool PuttyWidget::eventFilter(QObject *object, QEvent *event)
 {
+
   if (event->type() == QEvent::WinIdChange) {
-    DEBUG << "winid change" << this->internalWinId();
+    DEBUG << "winid change" << static_cast<PuttyWidget*>(object)->internalWinId();
     if (this->internalWinId()) {
-      puttyParent = ::SetParent(puttyHandle, reinterpret_cast<HWND>(this->internalWinId()));
+      puttyParent = ::SetParent(puttyHandle, reinterpret_cast<HWND>(static_cast<PuttyWidget*>(object)->internalWinId()));
     }
   }
   return false;
