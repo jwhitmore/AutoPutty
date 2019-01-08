@@ -1,4 +1,4 @@
-![AutoPutty.png](https://github.com/jwhitmore/AutoPutty/blob/master/AutoPutty.png?raw=true "AutoPutty") - PuTTY manager
+AutoPutty has relocated to gitlab https://gitlab.com/jwhitmore/AutoPutty
 =========
 
 **Get the** [Latest Release](https://github.com/jwhitmore/AutoPutty/releases/latest)
